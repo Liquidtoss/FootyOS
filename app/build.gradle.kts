@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "app.footyos"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "app.footyos"
