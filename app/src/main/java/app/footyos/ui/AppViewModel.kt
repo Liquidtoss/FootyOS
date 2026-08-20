@@ -10,6 +10,7 @@ import app.footyos.data.local.MatchEntity
 import app.footyos.data.local.NutritionDayEntity
 import app.footyos.data.local.PerformanceTestEntity
 import app.footyos.data.local.WeightEntity
+import app.footyos.data.local.WorkoutEntryEntity
 import app.footyos.domain.PerformancePlan
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,17 +19,37 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+data class TrendSummary(
+    val weeklyLossKg: Double,
+    val calorieAdjustment: Int,
+)
+
 data class AppUiState(
     val settings: UserSettings = UserSettings(),
     val weights: List<WeightEntity> = emptyList(),
     val matches: List<MatchEntity> = emptyList(),
     val tests: List<PerformanceTestEntity> = emptyList(),
+    val workouts: List<WorkoutEntryEntity> = emptyList(),
 ) {
     val currentWeightKg: Double
         get() = weights.lastOrNull()?.kilograms ?: settings.startingWeightKg
 
     val goalDate: LocalDate
         get() = PerformancePlan.plannedGoalDate(currentWeightKg)
+
+    val trend: TrendSummary?
+        get() {
+            if (weights.size < 10) return null
+            val recent = weights.takeLast(7).map { it.kilograms }.average()
+            val previous = weights.dropLast(7).takeLast(7)
+            if (previous.size < 4) return null
+            val previousAverage = previous.map { it.kilograms }.average()
+            val weeklyLoss = PerformancePlan.weeklyLoss(previousAverage, recent)
+            return TrendSummary(
+                weeklyLossKg = weeklyLoss,
+                calorieAdjustment = PerformancePlan.calorieAdjustment(weeklyLoss, currentWeightKg),
+            )
+        }
 }
 
 class AppViewModel(
@@ -40,8 +61,9 @@ class AppViewModel(
         repository.observeWeights(),
         repository.observeMatches(),
         repository.observePerformanceTests(),
-    ) { settings, weights, matches, tests ->
-        AppUiState(settings, weights, matches, tests)
+        repository.observeWorkoutEntries(),
+    ) { settings, weights, matches, tests, workouts ->
+        AppUiState(settings, weights, matches, tests, workouts)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -50,9 +72,7 @@ class AppViewModel(
 
     fun saveWeight(weightKg: Double) {
         viewModelScope.launch {
-            repository.saveWeight(
-                WeightEntity(LocalDate.now().toString(), weightKg),
-            )
+            repository.saveWeight(WeightEntity(LocalDate.now().toString(), weightKg))
         }
     }
 
@@ -79,10 +99,48 @@ class AppViewModel(
         }
     }
 
+    fun saveWorkout(
+        exerciseId: String,
+        loadLb: Double?,
+        sets: Int,
+        reps: Int?,
+        rpe: Int?,
+    ) {
+        viewModelScope.launch {
+            repository.saveWorkoutEntry(
+                WorkoutEntryEntity(
+                    date = LocalDate.now().toString(),
+                    exerciseId = exerciseId,
+                    loadLb = loadLb,
+                    sets = sets,
+                    reps = reps,
+                    rpe = rpe,
+                ),
+            )
+        }
+    }
+
+    fun savePerformance(sprint10: Double?, sprint20: Double?, sprint30: Double?, jumpCm: Double?) {
+        viewModelScope.launch {
+            repository.savePerformanceTest(
+                PerformanceTestEntity(
+                    date = LocalDate.now().toString(),
+                    sprint10 = sprint10,
+                    sprint20 = sprint20,
+                    sprint30 = sprint30,
+                    broadJumpCm = jumpCm,
+                ),
+            )
+        }
+    }
+
+    fun saveMatch(match: MatchEntity) {
+        viewModelScope.launch { repository.saveMatch(match) }
+    }
+
     fun applyCalorieAdjustment(delta: Int) {
         viewModelScope.launch {
-            val current = state.value.settings.calorieOffset
-            settingsRepository.updateCalories(current + delta)
+            settingsRepository.updateCalories(state.value.settings.calorieOffset + delta)
         }
     }
 
