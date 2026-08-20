@@ -19,8 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import app.footyos.domain.Exercise
 import app.footyos.domain.Movement
@@ -64,6 +66,8 @@ private fun ExerciseAnimation(movement: Movement) {
         ),
         label = "movement",
     )
+    val outline = MaterialTheme.colorScheme.outline
+    val accent = MaterialTheme.colorScheme.primary
 
     Canvas(
         modifier = Modifier
@@ -73,17 +77,22 @@ private fun ExerciseAnimation(movement: Movement) {
     ) {
         val ground = size.height * 0.88f
         drawLine(
-            color = MaterialTheme.colorScheme.outline,
+            color = outline,
             start = Offset(0f, ground),
             end = Offset(size.width, ground),
             strokeWidth = 3f,
         )
-        drawFigure(movement, progress, ground)
+        drawFigure(movement, progress, ground, accent)
     }
 }
 
-private fun DrawScope.drawFigure(movement: Movement, progress: Float, ground: Float) {
-    val color = androidx.compose.ui.graphics.Color.White
+private fun DrawScope.drawFigure(
+    movement: Movement,
+    progress: Float,
+    ground: Float,
+    accent: Color,
+) {
+    val figure = Color.White
     val stroke = 8f
     val centerX = size.width * 0.5f
     val baseY = when (movement) {
@@ -97,8 +106,8 @@ private fun DrawScope.drawFigure(movement: Movement, progress: Float, ground: Fl
     }
     val head = Offset(torsoTop.x, torsoTop.y - 22f)
 
-    drawCircle(color, 16f, head, style = androidx.compose.ui.graphics.drawscope.Stroke(strokeWidth = 6f))
-    drawLine(color, torsoTop, torsoBottom, stroke, StrokeCap.Round)
+    drawCircle(figure, 16f, head, style = Stroke(strokeWidth = 6f))
+    drawLine(figure, torsoTop, torsoBottom, stroke, StrokeCap.Round)
 
     val leftFoot = when (movement) {
         Movement.SplitSquat -> Offset(centerX - 70f, ground)
@@ -111,12 +120,18 @@ private fun DrawScope.drawFigure(movement: Movement, progress: Float, ground: Fl
         else -> Offset(centerX + 34f, ground)
     }
 
-    val leftKnee = Offset((torsoBottom.x + leftFoot.x) / 2f - 8f * progress, (torsoBottom.y + leftFoot.y) / 2f)
-    val rightKnee = Offset((torsoBottom.x + rightFoot.x) / 2f + 8f * progress, (torsoBottom.y + rightFoot.y) / 2f)
-    drawLine(color, torsoBottom, leftKnee, stroke, StrokeCap.Round)
-    drawLine(color, leftKnee, leftFoot, stroke, StrokeCap.Round)
-    drawLine(color, torsoBottom, rightKnee, stroke, StrokeCap.Round)
-    drawLine(color, rightKnee, rightFoot, stroke, StrokeCap.Round)
+    val leftKnee = Offset(
+        (torsoBottom.x + leftFoot.x) / 2f - 8f * progress,
+        (torsoBottom.y + leftFoot.y) / 2f,
+    )
+    val rightKnee = Offset(
+        (torsoBottom.x + rightFoot.x) / 2f + 8f * progress,
+        (torsoBottom.y + rightFoot.y) / 2f,
+    )
+    drawLine(figure, torsoBottom, leftKnee, stroke, StrokeCap.Round)
+    drawLine(figure, leftKnee, leftFoot, stroke, StrokeCap.Round)
+    drawLine(figure, torsoBottom, rightKnee, stroke, StrokeCap.Round)
+    drawLine(figure, rightKnee, rightFoot, stroke, StrokeCap.Round)
 
     val handHeight = when (movement) {
         Movement.OverheadPress -> torsoTop.y - 70f * progress
@@ -131,10 +146,18 @@ private fun DrawScope.drawFigure(movement: Movement, progress: Float, ground: Fl
     }
     val leftHand = Offset(centerX - reach, handHeight)
     val rightHand = Offset(centerX + reach, handHeight)
-    drawLine(color, torsoTop, leftHand, stroke, StrokeCap.Round)
-    drawLine(color, torsoTop, rightHand, stroke, StrokeCap.Round)
+    drawLine(figure, torsoTop, leftHand, stroke, StrokeCap.Round)
+    drawLine(figure, torsoTop, rightHand, stroke, StrokeCap.Round)
 
-    if (movement in setOf(Movement.Swing, Movement.Carry, Movement.Row, Movement.OverheadPress, Movement.Press)) {
-        drawCircle(MaterialTheme.colorScheme.primary, 13f, rightHand)
+    if (
+        movement in setOf(
+            Movement.Swing,
+            Movement.Carry,
+            Movement.Row,
+            Movement.OverheadPress,
+            Movement.Press,
+        )
+    ) {
+        drawCircle(accent, 13f, rightHand)
     }
 }
