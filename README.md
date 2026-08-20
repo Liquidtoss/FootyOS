@@ -25,7 +25,7 @@ The project follows Android's recommended layered architecture: UI state is expo
 
 ## Build
 
-CI uses Android Gradle Plugin 9.3, Gradle 9.5, JDK 17, compile SDK 37, and target SDK 36.
+CI uses Android Gradle Plugin 9.3, Gradle 9.5, JDK 17, compile SDK 36, and target SDK 36. API 36 is the stable baseline; newer Android preview SDKs should be validated in a separate preview job rather than blocking the production build.
 
 ```bash
 gradle :app:testDebugUnitTest
