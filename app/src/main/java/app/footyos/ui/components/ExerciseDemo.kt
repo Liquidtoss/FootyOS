@@ -106,7 +106,7 @@ private fun DrawScope.drawFigure(
     }
     val head = Offset(torsoTop.x, torsoTop.y - 22f)
 
-    drawCircle(figure, 16f, head, style = Stroke(strokeWidth = 6f))
+    drawCircle(figure, 16f, head, style = Stroke(width = 6f))
     drawLine(figure, torsoTop, torsoBottom, stroke, StrokeCap.Round)
 
     val leftFoot = when (movement) {
