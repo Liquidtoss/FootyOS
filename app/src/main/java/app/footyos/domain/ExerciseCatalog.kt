@@ -7,6 +7,12 @@ data class Exercise(
     val movement: Movement,
     val cues: List<String>,
     val mistakes: List<String>,
+    val reference: ExerciseReference,
+)
+
+data class ExerciseReference(
+    val source: String,
+    val url: String,
 )
 
 enum class Movement {
@@ -37,6 +43,7 @@ object ExerciseCatalog {
                 "Lower under control until the upper arm reaches the floor.",
             ),
             mistakes = listOf("Excessive elbow flare", "Bent wrist", "Bouncing off the floor"),
+            reference = ExerciseReference("NASM", "https://www.youtube.com/watch?v=yXstm050X84"),
         ),
         Exercise(
             id = "row",
@@ -49,6 +56,7 @@ object ExerciseCatalog {
                 "Control the lowering phase.",
             ),
             mistakes = listOf("Torso rotation", "Shrugging", "Jerking the bell"),
+            reference = ExerciseReference("Zack Henderson", "https://www.youtube.com/watch?v=ZeF3U4aR32U"),
         ),
         Exercise(
             id = "overhead_press",
@@ -61,6 +69,7 @@ object ExerciseCatalog {
                 "Keep the ribs down instead of leaning backward.",
             ),
             mistakes = listOf("Back hyperextension", "Unstable wrist", "Pressing around the side"),
+            reference = ExerciseReference("Eric Leija", "https://www.youtube.com/watch?v=He8TyCcK0sc"),
         ),
         Exercise(
             id = "suitcase_carry",
@@ -73,6 +82,7 @@ object ExerciseCatalog {
                 "Keep the ribs stacked over the pelvis.",
             ),
             mistakes = listOf("Side bending", "Shrugging", "Rushing the steps"),
+            reference = ExerciseReference("MBSC", "https://www.youtube.com/watch?v=bAnCoDrvXc4"),
         ),
         Exercise(
             id = "swing",
@@ -85,6 +95,7 @@ object ExerciseCatalog {
                 "Finish tall without leaning backward.",
             ),
             mistakes = listOf("Squatting the swing", "Lifting with the shoulders", "Hyperextending at the top"),
+            reference = ExerciseReference("StrongFirst", "https://www.youtube.com/watch?v=yHxcTn1UeAc"),
         ),
         Exercise(
             id = "goblet_squat",
@@ -97,6 +108,7 @@ object ExerciseCatalog {
                 "Let the knees track over the toes.",
             ),
             mistakes = listOf("Heels lifting", "Knees collapsing inward", "Losing trunk position"),
+            reference = ExerciseReference("NASM", "https://www.youtube.com/watch?v=nfX7IFK9UNI"),
         ),
         Exercise(
             id = "split_squat",
@@ -109,6 +121,7 @@ object ExerciseCatalog {
                 "Drive through the whole front foot.",
             ),
             mistakes = listOf("Stance too narrow", "Front knee collapsing inward", "Pushing mostly from the back leg"),
+            reference = ExerciseReference("NASM", "https://www.youtube.com/watch?v=hbw7hdyOpq0"),
         ),
         Exercise(
             id = "single_leg_rdl",
@@ -121,6 +134,7 @@ object ExerciseCatalog {
                 "Keep the pelvis mostly square to the floor.",
             ),
             mistakes = listOf("Opening the hip", "Rounding the back", "Reaching the floor at all costs"),
+            reference = ExerciseReference("NASM", "https://www.youtube.com/watch?v=6pEL3KxnlEo"),
         ),
         Exercise(
             id = "calf_raise",
@@ -129,6 +143,7 @@ object ExerciseCatalog {
             movement = Movement.CalfRaise,
             cues = listOf("Rise through the big-toe side of the foot.", "Pause at the top.", "Lower under control."),
             mistakes = listOf("Bouncing", "Rolling the ankle outward", "Rushing reps"),
+            reference = ExerciseReference("Children's Hospital Colorado", "https://www.youtube.com/watch?v=k8ipHzKeAkQ"),
         ),
         Exercise(
             id = "tibialis_raise",
@@ -137,6 +152,10 @@ object ExerciseCatalog {
             movement = Movement.TibialisRaise,
             cues = listOf("Keep the heels planted.", "Lift the forefoot toward the shins.", "Control the lowering."),
             mistakes = listOf("Heels lifting", "Rocking the whole body", "Short range"),
+            reference = ExerciseReference(
+                "Hawkes Physiotherapy",
+                "https://hawkesphysiotherapy.co.uk/exercise/tibialis-raises/",
+            ),
         ),
         Exercise(
             id = "copenhagen",
@@ -145,6 +164,7 @@ object ExerciseCatalog {
             movement = Movement.Copenhagen,
             cues = listOf("Start knee-supported if needed.", "Keep the body in one line.", "Lift the bottom hip toward the top leg."),
             mistakes = listOf("Hips sagging", "Trunk rotation", "Progressing the lever too quickly"),
+            reference = ExerciseReference("E3 Rehab", "https://www.youtube.com/watch?v=YRRnnZsRs9U"),
         ),
         Exercise(
             id = "hamstring_slider",
@@ -153,6 +173,7 @@ object ExerciseCatalog {
             movement = Movement.HamstringCurl,
             cues = listOf("Bridge before extending the legs.", "Slide the heels away slowly.", "Keep the pelvis controlled."),
             mistakes = listOf("Hips dropping", "Moving too fast", "Forcing through hamstring pain"),
+            reference = ExerciseReference("E3 Rehab", "https://vimeo.com/662494989"),
         ),
     )
 
