@@ -5,7 +5,7 @@
 1. Create an API key in https://aistudio.google.com/apikey using a project with billing disabled. The app cannot detect or enforce Google's billing tier; a billed project can incur charges even on the same model endpoint.
 2. Install the debug APK and open Nutrition → Gemini setup.
 3. Enter the key on the phone, acknowledge photo transmission and the unbilled-project requirement, and choose Save key and enable. Do not commit keys or paste them into development chats.
-4. Take or choose a meal photo. The app compresses it and sends it once to `gemini-2.5-flash` through HTTPS `generateContent`. Review the foods, estimated portions, calorie range, assumptions and editable macro totals, then confirm.
+4. Take or choose a meal photo. The app compresses it and sends it once to `gemini-3.1-flash-lite` through HTTPS `generateContent`. Review the foods, estimated portions, calorie range, assumptions and editable macro totals, then confirm.
 
 The key is encrypted with Android Keystore AES-GCM and stored in `noBackupFilesDir`. It is not compiled into the APK, logged, or backed up. Remove key and disable stops new analysis requests; an already submitted request may complete. This BYOK setup is for the user's private installation, not distribution with a shared developer key. A distributed version needs an authenticated backend.
 
