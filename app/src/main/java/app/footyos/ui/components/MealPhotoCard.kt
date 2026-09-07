@@ -193,6 +193,9 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                 Text(if (manualExpanded) "Manual meal ▴" else "Manual meal ▾")
             }
             }
+            preview?.let {
+                Image(it.asImageBitmap(), "Captured meal", Modifier.fillMaxWidth().heightIn(max = 280.dp))
+            }
             OutlinedTextField(
                 value = mealContext,
                 onValueChange = { mealContext = it.take(1000) },
@@ -204,9 +207,6 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
             )
             if (selected != null && configured && geminiStatus.isBlank()) {
                 Button(enabled = !busy, onClick = { scope.launch { analyze(requireNotNull(selected)) } }) { Text("Estimate meal") }
-            }
-            preview?.let {
-                Image(it.asImageBitmap(), "Captured meal", Modifier.fillMaxWidth().heightIn(max = 280.dp))
             }
             if (selected != null) {
                 val result = geminiJson?.let { runCatching { GeminiMealResult.parse(it) }.getOrNull() }
