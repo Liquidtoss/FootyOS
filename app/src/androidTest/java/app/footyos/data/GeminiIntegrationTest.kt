@@ -51,6 +51,33 @@ class GeminiIntegrationTest {
         }
     }
 
+    @Test fun explicitCorrectionsRefreshTotalsAndFailurePreservesLastResult() = runBlocking {
+        fixture { db, photos, keys ->
+            var calls = 0
+            val revised = json.replace("\"calories\":600", "\"calories\":500")
+            val service = GeminiAnalysis(db.footyDao(), photos, keys, GeminiTransport { _, _, context ->
+                calls++
+                when (calls) {
+                    1 -> GeminiResponse(json, "test-model")
+                    2 -> { assertEquals("No coconut milk", context); GeminiResponse(revised, "test-model") }
+                    else -> throw GeminiFailure("quota")
+                }
+            })
+            val file = photos.create().apply { writeBytes(byteArrayOf(1)) }
+            try {
+                service.analyze(file.name)
+                assertEquals(revised, service.analyze(file.name, mealContext = "No coconut milk", reestimate = true).resultJson)
+                assertEquals(revised, service.analyze(file.name).resultJson)
+                assertEquals(2, calls)
+                val failed = service.analyze(file.name, mealContext = "Less rice", reestimate = true)
+                assertEquals("quota", failed.status)
+                assertEquals(revised, failed.resultJson)
+                assertEquals("complete", service.cached(file.name)!!.status)
+                assertEquals(revised, service.cached(file.name)!!.resultJson)
+            } finally { file.delete() }
+        }
+    }
+
     @Test fun rejectsInvalidRangesAndNonfood() {
         assertThrows(IllegalArgumentException::class.java) { GeminiMealResult.parse(json.replace("\"lowerCalories\":450", "\"lowerCalories\":700")) }
         assertThrows(IllegalArgumentException::class.java) { GeminiMealResult.parse(json.replace("[{\"name\":\"Test food\",\"grams\":250}]", "[]")) }

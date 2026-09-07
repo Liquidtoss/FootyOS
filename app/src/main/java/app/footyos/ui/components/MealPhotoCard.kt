@@ -72,13 +72,17 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
         kcal = values[0].toString(); protein = values[1].toString(); carbs = values[2].toString(); fat = values[3].toString()
         geminiApplied = true
     }
-    suspend fun analyze(photo: String, retry: Boolean = false) {
+    suspend fun analyze(photo: String, retry: Boolean = false, correction: String? = null) {
         busy = true
         geminiStatus = "loading"
         try {
-            val result = container.geminiAnalysis.analyze(photo, retry, mealContext.trim())
+            val result = container.geminiAnalysis.analyze(photo, retry, correction ?: mealContext.trim(), reestimate = correction != null)
             geminiStatus = result.status
             geminiJson = result.resultJson
+            if (correction != null) {
+                if (result.status == "complete" && result.resultJson != null) { useGemini(result.resultJson); error = null }
+                else error = app.footyos.nutrition.GeminiErrors.message(result.status) + " Your previous estimate is kept."
+            }
             if (result.resultJson != null && appliedPhoto != photo) {
                 if (kcal.isBlank() && name.isBlank()) useGemini(result.resultJson)
                 appliedPhoto = photo
@@ -213,7 +217,23 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                 if (result != null) {
                     Text("Gemini estimate · ${result.lowerCalories.toInt()}–${result.upperCalories.toInt()} kcal")
                     TextButton(onClick = { estimateDetails = !estimateDetails }) { Text(if (estimateDetails) "Hide estimate details" else "Foods & assumptions") }
-                    if (estimateDetails) { Text(result.foods); Text(result.assumptions) }
+                    if (estimateDetails) {
+                        var correctedFoods by rememberSaveable(geminiJson) { mutableStateOf(result.foods) }
+                        var correctedAssumptions by rememberSaveable(geminiJson) { mutableStateOf(result.assumptions) }
+                        Text("Correct ingredients, quantities, or cooking details, then re-estimate. This sends another request and updates the totals below.")
+                        OutlinedTextField(correctedFoods, { correctedFoods = it.take(3000) },
+                            label = { Text("Foods & portions") }, modifier = Modifier.fillMaxWidth(),
+                            enabled = !busy, minLines = 3, maxLines = 6)
+                        OutlinedTextField(correctedAssumptions, { correctedAssumptions = it.take(2000) },
+                            label = { Text("Cooking details & assumptions") }, modifier = Modifier.fillMaxWidth(),
+                            enabled = !busy, minLines = 2, maxLines = 5)
+                        Button(enabled = !busy && configured && correctedFoods.isNotBlank() &&
+                            (correctedFoods != result.foods || correctedAssumptions != result.assumptions), onClick = {
+                            val details = "Re-estimate using these user-corrected ingredients and portions in preference to visual guesses:\n" +
+                                correctedFoods + "\nUser-corrected cooking details and assumptions:\n" + correctedAssumptions
+                            scope.launch { analyze(requireNotNull(selected), correction = details) }
+                        }) { Text(if (busy) "Re-estimating…" else "Re-estimate with corrections") }
+                    }
                     if (!geminiApplied) TextButton(enabled = !busy, onClick = { useGemini(requireNotNull(geminiJson)) }) { Text("Use Gemini totals") }
                 } else {
                     if (geminiStatus.isNotBlank() || !configured) Text(app.footyos.nutrition.GeminiErrors.message(geminiStatus))
