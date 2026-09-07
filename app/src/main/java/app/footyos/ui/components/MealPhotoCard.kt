@@ -40,6 +40,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealEstimateEntity?) -> Unit) {
     val scope = rememberCoroutineScope()
+    var mealContext by rememberSaveable { mutableStateOf("") }
     var manualExpanded by rememberSaveable { mutableStateOf(false) }
     var estimateDetails by rememberSaveable { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
@@ -75,7 +76,7 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
         busy = true
         geminiStatus = "loading"
         try {
-            val result = container.geminiAnalysis.analyze(photo, retry)
+            val result = container.geminiAnalysis.analyze(photo, retry, mealContext.trim())
             geminiStatus = result.status
             geminiJson = result.resultJson
             if (result.resultJson != null && appliedPhoto != photo) {
@@ -89,7 +90,18 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
     LaunchedEffect(selected, configured) {
         val photo = selected
         if (photo == null) { geminiJson = null; geminiStatus = "" }
-        else if (configured) analyze(photo)
+        else {
+            val cached = container.geminiAnalysis.cached(photo)
+            geminiStatus = cached?.status ?: ""
+            geminiJson = cached?.resultJson
+            cached?.resultJson?.let { json ->
+                mealContext = org.json.JSONObject(json).optString("userMealContext", mealContext)
+                if (appliedPhoto != photo) {
+                    if (kcal.isBlank() && name.isBlank()) useGemini(json)
+                    appliedPhoto = photo
+                }
+            }
+        }
     }
     val camera = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         val captured = pending
@@ -181,6 +193,18 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                 Text(if (manualExpanded) "Manual meal ▴" else "Manual meal ▾")
             }
             }
+            OutlinedTextField(
+                value = mealContext,
+                onValueChange = { mealContext = it.take(1000) },
+                label = { Text("Meal details (optional)") },
+                placeholder = { Text("e.g. Chicken curry with coconut milk, potatoes and rice") },
+                enabled = !busy && geminiJson == null,
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 2, maxLines = 4,
+            )
+            if (selected != null && configured && geminiStatus.isBlank()) {
+                Button(enabled = !busy, onClick = { scope.launch { analyze(requireNotNull(selected)) } }) { Text("Estimate meal") }
+            }
             preview?.let {
                 Image(it.asImageBitmap(), "Captured meal", Modifier.fillMaxWidth().heightIn(max = 280.dp))
             }
@@ -192,7 +216,7 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                     if (estimateDetails) { Text(result.foods); Text(result.assumptions) }
                     if (!geminiApplied) TextButton(enabled = !busy, onClick = { useGemini(requireNotNull(geminiJson)) }) { Text("Use Gemini totals") }
                 } else {
-                    Text(app.footyos.nutrition.GeminiErrors.message(geminiStatus))
+                    if (geminiStatus.isNotBlank() || !configured) Text(app.footyos.nutrition.GeminiErrors.message(geminiStatus))
                     if (geminiStatus.isNotBlank() && geminiStatus != "loading") {
                         Text("Diagnostic: $geminiStatus · ${app.footyos.nutrition.GeminiClient.MODEL}", style = MaterialTheme.typography.bodySmall)
                     }
@@ -238,6 +262,7 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                         onSave(MealEntryEntity(draftId, java.time.LocalDate.now().toString(), name.trim(), selected,
                             kcal.toInt(), protein.toInt(), carbs.toInt(), fat.toInt(),
                             source = if (geminiApplied) "gemini (user confirmed)" else if (offline != null) "offline (user confirmed)" else "manual"), offline)
+                        mealContext = ""
                         manualExpanded = false
                         geminiApplied = false
                         geminiJson = null

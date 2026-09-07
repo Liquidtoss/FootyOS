@@ -17,10 +17,10 @@ class GeminiIntegrationTest {
     @Test fun successfulAnalysisIsCachedAndLinkedOnConfirmation() = runBlocking {
         fixture { db, photos, keys ->
             var calls = 0
-            val service = GeminiAnalysis(db.footyDao(), photos, keys, GeminiTransport { _, _ -> calls++; GeminiResponse(json, "test-model") })
+            val service = GeminiAnalysis(db.footyDao(), photos, keys, GeminiTransport { _, _, details -> assertEquals("Coconut milk curry", details); calls++; GeminiResponse(json, "test-model") })
             val file = photos.create().apply { writeBytes(byteArrayOf(1, 2, 3)) }
             try {
-                val first = service.analyze(file.name)
+                val first = service.analyze(file.name, mealContext = "Coconut milk curry")
                 assertEquals("complete", first.status)
                 assertEquals(first, service.analyze(file.name))
                 assertEquals(1, calls)
@@ -36,7 +36,7 @@ class GeminiIntegrationTest {
     @Test fun quotaAndInterruptedRequestsNeverAutomaticallyRetry() = runBlocking {
         fixture { db, photos, keys ->
             var calls = 0
-            val service = GeminiAnalysis(db.footyDao(), photos, keys, GeminiTransport { _, _ -> calls++; throw GeminiFailure("quota") })
+            val service = GeminiAnalysis(db.footyDao(), photos, keys, GeminiTransport { _, _, _ -> calls++; throw GeminiFailure("quota") })
             val file = photos.create().apply { writeBytes(byteArrayOf(1)) }
             try {
                 assertEquals("quota", service.analyze(file.name).status)

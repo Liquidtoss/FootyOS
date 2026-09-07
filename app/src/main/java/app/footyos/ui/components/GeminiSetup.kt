@@ -28,12 +28,12 @@ fun GeminiSetup() {
     Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Gemini photo estimates", style = MaterialTheme.typography.titleLarge)
-            Text(if (configured) "Automatic analysis enabled for new photos." else "Offline mode · add your own Gemini key to enable photo estimates.")
+            Text(if (configured) "Photo estimates enabled. Add meal details, then tap Estimate meal." else "Offline mode · add your own Gemini key to enable photo estimates.")
             TextButton(enabled = !busy, onClick = { expanded = !expanded; key = "" }) { Text(if (expanded) "Close setup" else "Gemini setup") }
             if (expanded) {
                 Text("Private installation only. Create a key in Google AI Studio using a project without billing enabled. The app cannot verify your billing tier.")
                 TextButton(onClick = { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://aistudio.google.com/apikey"))) }) { Text("Open Google AI Studio") }
-                Text("Enabling sends each added meal photo to Google once. Free-tier content may be used to improve Google products and reviewed by humans. Local photo deletion does not delete Google's copies.")
+                Text("Tapping Estimate meal sends your photo and meal details to Google. Free-tier content may be used to improve Google products and reviewed by humans. Local photo deletion does not delete Google's copies.")
                 OutlinedTextField(key, { key = it }, label = { Text("Gemini API key") }, visualTransformation = PasswordVisualTransformation(), singleLine = true, enabled = !busy)
                 Row {
                     Checkbox(agreed, { agreed = it }, enabled = !busy)

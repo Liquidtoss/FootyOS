@@ -16,7 +16,8 @@ class GeminiAnalysis(
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val mutex = Mutex()
-    suspend fun analyze(photo: String, retry: Boolean = false): PhotoAnalysisEntity = scope.async {
+    suspend fun cached(photo: String) = dao.photoAnalysis(photo)
+    suspend fun analyze(photo: String, retry: Boolean = false, mealContext: String = ""): PhotoAnalysisEntity = scope.async {
         mutex.withLock {
             val cached = dao.photoAnalysis(photo)
             if (cached != null && (cached.status == "complete" || !retry)) return@withLock cached
@@ -28,7 +29,7 @@ class GeminiAnalysis(
             if (cached != null) dao.saveAnalysis(base)
             else if (dao.claimAnalysis(base) == -1L) return@withLock requireNotNull(dao.photoAnalysis(photo))
             val result = try {
-                val response = transport.estimate(file.readBytes(), key)
+                val response = transport.estimate(file.readBytes(), key, mealContext.take(1000))
                 GeminiMealResult.parse(response.json)
                 base.copy(status = "complete", resultJson = response.json, model = response.model)
             } catch (e: CancellationException) { throw e }

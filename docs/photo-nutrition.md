@@ -5,7 +5,7 @@
 1. Create an API key in https://aistudio.google.com/apikey using a project with billing disabled. The app cannot detect or enforce Google's billing tier; a billed project can incur charges even on the same model endpoint.
 2. Install the debug APK and open Nutrition → Gemini setup.
 3. Enter the key on the phone, acknowledge photo transmission and the unbilled-project requirement, and choose Save key and enable. Do not commit keys or paste them into development chats.
-4. Take or choose a meal photo. The app compresses it and sends it once to `gemini-3.1-flash-lite` through HTTPS `generateContent`. Review the foods, estimated portions, calorie range, assumptions and editable macro totals, then confirm.
+4. Take or choose a meal photo, optionally describe ingredients and portions in Meal details, then tap Estimate meal. The app compresses it and sends it with those details once to `gemini-3.1-flash-lite` through HTTPS `generateContent`. Review the foods, estimated portions, calorie range, assumptions and editable macro totals, then confirm.
 
 The key is encrypted with Android Keystore AES-GCM and stored in `noBackupFilesDir`. It is not compiled into the APK, logged, or backed up. Remove key and disable stops new analysis requests; an already submitted request may complete. This BYOK setup is for the user's private installation, not distribution with a shared developer key. A distributed version needs an authenticated backend.
 
@@ -36,3 +36,5 @@ Agreement is not accuracy or probability. Example: 500 versus 600 kcal with thre
 ## Validation and remaining setup
 
 Compilation and unit tests are available locally. Instrumentation covers migration, meal persistence, image expiry, agreement, encrypted key storage, successful-response reuse, quota/interrupted-request behavior, result validation and navigation. Gemini tests use a fake transport and make no provider calls. A real API smoke test still requires the user's key entered in the app. Food/portion accuracy and physical-device capture behavior remain to be evaluated.
+
+Meal details are capped at 1,000 characters, sent only when Estimate meal is tapped, and stored with the completed response. Completed results remain cached; their original meal details are read-only.
