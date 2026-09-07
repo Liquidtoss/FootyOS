@@ -33,6 +33,12 @@ class GeminiAnalysis(
                 base.copy(status = "complete", resultJson = response.json, model = response.model)
             } catch (e: CancellationException) { throw e }
             catch (e: GeminiFailure) { base.copy(status = e.reason) }
+            catch (_: java.net.SocketTimeoutException) { base.copy(status = "timeout") }
+            catch (_: java.net.UnknownHostException) { base.copy(status = "offline") }
+            catch (_: javax.net.ssl.SSLException) { base.copy(status = "tls") }
+            catch (_: java.io.IOException) { base.copy(status = "network") }
+            catch (_: IllegalArgumentException) { base.copy(status = "invalid_output") }
+            catch (_: org.json.JSONException) { base.copy(status = "invalid_output") }
             catch (_: Exception) { base.copy(status = "failed") }
             dao.saveAnalysis(result)
             result

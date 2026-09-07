@@ -171,16 +171,11 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                     Text("Approximate portions and nutrients. Correct the meal totals below before confirming.")
                     TextButton(enabled = !busy, onClick = { useGemini(requireNotNull(geminiJson)) }) { Text("Use Gemini totals") }
                 } else {
-                    Text(when (geminiStatus) {
-                        "loading" -> "Estimating this meal…"
-                        "quota" -> "Gemini quota reached. Use the offline calculator below."
-                        "auth", "setup" -> "Check your Gemini key and project access in Gemini setup. Offline entry is available."
-                        "pending" -> "The previous request was interrupted. Use offline entry or explicitly retry."
-                        "expired" -> "This photo expired. Add a new photo or use offline entry."
-                        "failed", "unavailable", "unreadable" -> "No usable Gemini estimate. Use the offline calculator below."
-                        else -> "Offline mode. Use the calculator below or enable Gemini in setup."
-                    })
-                    if (configured && !busy && geminiStatus in listOf("quota", "auth", "pending", "failed", "unavailable", "unreadable")) {
+                    Text(app.footyos.nutrition.GeminiErrors.message(geminiStatus))
+                    if (geminiStatus.isNotBlank() && geminiStatus != "loading") {
+                        Text("Diagnostic: $geminiStatus · ${app.footyos.nutrition.GeminiClient.MODEL}", style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (configured && !busy && geminiStatus !in listOf("", "loading", "complete", "setup", "expired")) {
                         TextButton(onClick = { scope.launch { analyze(requireNotNull(selected), retry = true) } }) { Text("Retry Gemini (sends another request)") }
                     }
                 }
