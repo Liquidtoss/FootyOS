@@ -44,6 +44,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.SportsSoccer
@@ -182,42 +183,47 @@ private fun QuickWeight(viewModel: AppViewModel) {
 
 @Composable
 private fun NutritionScreen(state: AppUiState, viewModel: AppViewModel) {
-    var calories by remember { mutableStateOf("") }
-    var protein by remember { mutableStateOf("") }
-    var carbs by remember { mutableStateOf("") }
-    var fat by remember { mutableStateOf("") }
+    var settingsOpen by rememberSaveable { mutableStateOf(false) }
+    if (settingsOpen) {
+        androidx.compose.ui.window.Dialog(onDismissRequest = { settingsOpen = false }) {
+            Surface(shape = MaterialTheme.shapes.large) {
+                Column(Modifier.heightIn(max = 650.dp).verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Nutrition settings", style = MaterialTheme.typography.titleLarge)
+                        TextButton(onClick = { settingsOpen = false }) { Text("Done") }
+                    }
+                    NutritionGoals(state, viewModel)
+                    app.footyos.ui.components.GeminiSetup()
+                    LegacyNutritionBaseline(viewModel)
+                }
+            }
+        }
+    }
     ScreenColumn {
-        PageHeading("Fuel your game", "NUTRITION")
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) { PageHeading("Fuel your game", "NUTRITION") }
+            IconButton(onClick = { settingsOpen = true }) {
+                Icon(androidx.compose.material.icons.Icons.Default.Settings, contentDescription = "Nutrition settings")
+            }
+        }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MetricCard("${PerformancePlan.calories(DayOfWeek.from(LocalDate.now()), state.settings.calorieOffset)}", "kcal target", Modifier.weight(1f))
+            MetricCard("${PerformancePlan.calories(LocalDate.now().dayOfWeek, state.settings.calorieOffset)}", "kcal target", Modifier.weight(1f))
             MetricCard("${state.settings.proteinTargetGrams} g", "protein target", Modifier.weight(1f))
         }
-        app.footyos.ui.components.GeminiSetup()
-        DailyNutrition(state, viewModel)
         MealPhotoCard(onSave = viewModel::saveMeal)
-        SectionCard("Manual daily baseline") {
-            Text("Use this only for nutrition not already logged as meals. Saving replaces the manual baseline.")
-            IntegerField("Calories", calories) { calories = it }
-            IntegerField("Protein g", protein) { protein = it }
-            IntegerField("Carbs g", carbs) { carbs = it }
-            IntegerField("Fat g", fat) { fat = it }
-            Button(onClick = {
-                viewModel.saveNutrition(
-                    calories.toIntOrNull() ?: 0,
-                    protein.toIntOrNull() ?: 0,
-                    carbs.toIntOrNull() ?: 0,
-                    fat.toIntOrNull() ?: 0,
-                    null,
-                    3,
-                )
-            }) { Text("Save nutrition") }
-        }
-        SectionCard("Assembly meals") {
-            Text("Greek yogurt + whey + berries + measured granola")
-            Text("Precooked chicken + microwave rice + bagged salad")
-            Text("High-protein miso ramen + chicken/shrimp/tofu + vegetables")
-            Text("Cottage cheese + fruit")
-        }
+        DailyNutrition(state, viewModel)
+    }
+}
+
+@Composable
+private fun LegacyNutritionBaseline(viewModel: AppViewModel) {
+    val nutrition by viewModel.nutrition.collectAsStateWithLifecycle()
+    val baseline = nutrition.second ?: return
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    TextButton(onClick = { expanded = !expanded }) { Text("Previous daily entry") }
+    if (expanded) {
+        Text("${baseline.calories} kcal from your previous daily entry is included in today's progress. Remove it if those foods are now logged as meals.")
+        TextButton(onClick = { viewModel.saveNutrition(0, 0, 0, 0, baseline.waistCm, baseline.readiness) }) { Text("Clear previous daily totals") }
     }
 }
 
@@ -583,9 +589,6 @@ private fun DailyNutrition(state: AppUiState, viewModel: AppViewModel) {
     val nutrition by viewModel.nutrition.collectAsStateWithLifecycle()
     val (meals, baseline) = nutrition
     val settings = state.settings
-    var protein by rememberSaveable(settings.proteinTargetGrams) { mutableStateOf(settings.proteinTargetGrams.toString()) }
-    var carbs by rememberSaveable(settings.carbsTargetGrams) { mutableStateOf(settings.carbsTargetGrams.toString()) }
-    var fat by rememberSaveable(settings.fatTargetGrams) { mutableStateOf(settings.fatTargetGrams.toString()) }
     SectionCard("Today's progress") {
         val metrics = listOf(
             Triple("Calories", meals.sumOf { it.calories } + (baseline?.calories ?: 0), PerformancePlan.calories(LocalDate.now().dayOfWeek, settings.calorieOffset)),
@@ -601,8 +604,29 @@ private fun DailyNutrition(state: AppUiState, viewModel: AppViewModel) {
             )
             Text(if (consumed <= target) "${target - consumed} remaining" else "${consumed - target} above goal", style = MaterialTheme.typography.bodySmall)
         }
-        Text("Progress includes confirmed meals and your manual baseline. Photo estimates will remain approximate; check portions, oils and sauces.")
+
     }
+    SectionCard("Today's meals") {
+        if (meals.isEmpty()) Text("No meals logged yet.")
+        meals.forEach { meal ->
+            Text(meal.name, style = MaterialTheme.typography.titleMedium)
+            Text("${meal.calories} kcal · P ${meal.proteinGrams} g · C ${meal.carbsGrams} g · F ${meal.fatGrams} g")
+            var expanded by rememberSaveable(meal.id) { mutableStateOf(false) }
+            TextButton(onClick = { expanded = !expanded }) { Text(if (expanded) "Hide details" else "Meal details") }
+            if (expanded) {
+                meal.photoName?.let { app.footyos.ui.components.SavedMealPhoto(it) }
+                TextButton(onClick = { viewModel.deleteMeal(meal.id) }) { Text("Delete meal") }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NutritionGoals(state: AppUiState, viewModel: AppViewModel) {
+    val settings = state.settings
+    var protein by rememberSaveable(settings.proteinTargetGrams) { mutableStateOf(settings.proteinTargetGrams.toString()) }
+    var carbs by rememberSaveable(settings.carbsTargetGrams) { mutableStateOf(settings.carbsTargetGrams.toString()) }
+    var fat by rememberSaveable(settings.fatTargetGrams) { mutableStateOf(settings.fatTargetGrams.toString()) }
     SectionCard("Daily macro goals") {
         Text("Adjust these starting goals to your own plan.")
         IntegerField("Protein g", protein) { protein = it }
@@ -611,15 +635,5 @@ private fun DailyNutrition(state: AppUiState, viewModel: AppViewModel) {
         Button(enabled = listOf(protein, carbs, fat).all { (it.toIntOrNull() ?: 0) in 1..1000 }, onClick = {
             viewModel.saveMacroGoals(protein.toInt(), carbs.toInt(), fat.toInt())
         }) { Text("Save goals") }
-    }
-    SectionCard("Today's meals") {
-        if (meals.isEmpty()) Text("No meals logged yet.")
-        meals.forEach { meal ->
-            Text(meal.name, style = MaterialTheme.typography.titleMedium)
-            Text("${meal.calories} kcal · P ${meal.proteinGrams} g · C ${meal.carbsGrams} g · F ${meal.fatGrams} g")
-            Text("Confirmed · ${meal.source}", style = MaterialTheme.typography.bodySmall)
-            meal.photoName?.let { app.footyos.ui.components.SavedMealPhoto(it) }
-            TextButton(onClick = { viewModel.deleteMeal(meal.id) }) { Text("Delete meal") }
-        }
     }
 }

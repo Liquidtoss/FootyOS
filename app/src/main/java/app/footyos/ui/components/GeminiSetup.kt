@@ -25,7 +25,7 @@ fun GeminiSetup() {
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    Card(Modifier.fillMaxWidth()) {
+    Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Gemini photo estimates", style = MaterialTheme.typography.titleLarge)
             Text(if (configured) "Automatic analysis enabled for new photos." else "Offline mode · add your own Gemini key to enable photo estimates.")

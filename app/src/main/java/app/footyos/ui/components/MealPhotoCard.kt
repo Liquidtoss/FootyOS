@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -39,6 +40,8 @@ import kotlinx.coroutines.withContext
 @Composable
 fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealEstimateEntity?) -> Unit) {
     val scope = rememberCoroutineScope()
+    var manualExpanded by rememberSaveable { mutableStateOf(false) }
+    var estimateDetails by rememberSaveable { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var name by rememberSaveable { mutableStateOf("") }
     var kcal by rememberSaveable { mutableStateOf("") }
@@ -155,10 +158,29 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
         val name = selected
         if (name != null) value = withContext(Dispatchers.IO) { runCatching { photos.preview(name) }.getOrNull() }
     }
-    Card(Modifier.fillMaxWidth()) {
+    Card(Modifier.fillMaxWidth(), colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("Add meal", style = MaterialTheme.typography.titleLarge)
-            Text("Photos stay for 30 days. Your nutrition log stays saved.")
+            Button(modifier = Modifier.fillMaxWidth(), enabled = pending == null && !busy, onClick = {
+                error = null
+                try {
+                    val file = photos.create()
+                    pending = file.name
+                    camera.launch(photos.uri(file.name))
+                } catch (_: Exception) {
+                    photos.delete(pending)
+                    pending = null
+                    error = "Could not open the camera. Check that a camera app is available and try again."
+                }
+            }) { Text(if (selected == null) "Take meal photo" else "Retake photo") }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            TextButton(enabled = pending == null && !busy, onClick = {
+                try { gallery.launch("image/*") }
+                catch (_: Exception) { error = "Could not open the photo picker." }
+            }) { Text("Choose photo") }
+            TextButton(enabled = !busy, onClick = { manualExpanded = !manualExpanded }) {
+                Text(if (manualExpanded) "Manual meal ▴" else "Manual meal ▾")
+            }
+            }
             preview?.let {
                 Image(it.asImageBitmap(), "Captured meal", Modifier.fillMaxWidth().heightIn(max = 280.dp))
             }
@@ -166,10 +188,9 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                 val result = geminiJson?.let { runCatching { GeminiMealResult.parse(it) }.getOrNull() }
                 if (result != null) {
                     Text("Gemini estimate · ${result.lowerCalories.toInt()}–${result.upperCalories.toInt()} kcal")
-                    Text(result.foods)
-                    Text(result.assumptions)
-                    Text("Approximate portions and nutrients. Correct the meal totals below before confirming.")
-                    TextButton(enabled = !busy, onClick = { useGemini(requireNotNull(geminiJson)) }) { Text("Use Gemini totals") }
+                    TextButton(onClick = { estimateDetails = !estimateDetails }) { Text(if (estimateDetails) "Hide estimate details" else "Foods & assumptions") }
+                    if (estimateDetails) { Text(result.foods); Text(result.assumptions) }
+                    if (!geminiApplied) TextButton(enabled = !busy, onClick = { useGemini(requireNotNull(geminiJson)) }) { Text("Use Gemini totals") }
                 } else {
                     Text(app.footyos.nutrition.GeminiErrors.message(geminiStatus))
                     if (geminiStatus.isNotBlank() && geminiStatus != "loading") {
@@ -181,7 +202,7 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                 }
                 TextButton(enabled = !busy, onClick = { photos.delete(selected); selected = null; error = null }) { Text("Remove photo") }
             }
-            androidx.compose.runtime.key(draftId) {
+            if (manualExpanded) androidx.compose.runtime.key(draftId) {
                 OfflineMealEditor(enabled = !busy && pending == null) { totals, details, description ->
                     val rounded = totals.rounded()
                     kcal = rounded[0].toString(); protein = rounded[1].toString(); carbs = rounded[2].toString(); fat = rounded[3].toString()
@@ -193,12 +214,16 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                     offlineCreatedAt = System.currentTimeMillis()
                 }
             }
-            if (offlineJson != null) Text("Offline estimate applied. Review the values below before saving. Portion measurements determine the result.")
-            OutlinedTextField(name, { name = it }, label = { Text("Meal / foods and portions") }, enabled = !busy)
-            OutlinedTextField(kcal, { kcal = it }, label = { Text("Calories") }, enabled = !busy)
-            OutlinedTextField(protein, { protein = it }, label = { Text("Protein g") }, enabled = !busy)
-            OutlinedTextField(carbs, { carbs = it }, label = { Text("Carbs g") }, enabled = !busy)
-            OutlinedTextField(fat, { fat = it }, label = { Text("Fat g") }, enabled = !busy)
+            if (manualExpanded || geminiJson != null) {
+            OutlinedTextField(name, { name = it }, label = { Text("Meal name") }, enabled = !busy, modifier = Modifier.fillMaxWidth())
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(kcal, { kcal = it }, label = { Text("kcal") }, enabled = !busy, singleLine = true, modifier = Modifier.weight(1f))
+                OutlinedTextField(protein, { protein = it }, label = { Text("Protein g") }, enabled = !busy, singleLine = true, modifier = Modifier.weight(1f))
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(carbs, { carbs = it }, label = { Text("Carbs g") }, enabled = !busy, singleLine = true, modifier = Modifier.weight(1f))
+                OutlinedTextField(fat, { fat = it }, label = { Text("Fat g") }, enabled = !busy, singleLine = true, modifier = Modifier.weight(1f))
+            }
             val amounts = listOf(kcal, protein, carbs, fat).map { it.toIntOrNull() }
             Button(enabled = !busy && pending == null && name.isNotBlank() && amounts.all { it != null && it in 0..10000 }, onClick = {
                 busy = true
@@ -213,6 +238,7 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                         onSave(MealEntryEntity(draftId, java.time.LocalDate.now().toString(), name.trim(), selected,
                             kcal.toInt(), protein.toInt(), carbs.toInt(), fat.toInt(),
                             source = if (geminiApplied) "gemini (user confirmed)" else if (offline != null) "offline (user confirmed)" else "manual"), offline)
+                        manualExpanded = false
                         geminiApplied = false
                         geminiJson = null
                         offlineJson = null
@@ -225,23 +251,9 @@ fun MealPhotoCard(onSave: suspend (MealEntryEntity, app.footyos.data.local.MealE
                     finally { busy = false }
                 }
             }) { Text(if (busy) "Processing…" else "Confirm and save meal") }
+            }
             error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            TextButton(enabled = pending == null && !busy, onClick = {
-                try { gallery.launch("image/*") }
-                catch (_: Exception) { error = "Could not open the photo picker." }
-            }) { Text("Choose photo") }
-            Button(enabled = pending == null && !busy, onClick = {
-                error = null
-                try {
-                    val file = photos.create()
-                    pending = file.name
-                    camera.launch(photos.uri(file.name))
-                } catch (_: Exception) {
-                    photos.delete(pending)
-                    pending = null
-                    error = "Could not open the camera. Check that a camera app is available and try again."
-                }
-            }) { Text(if (selected == null) "Take meal photo" else "Retake photo") }
+
         }
     }
 }
