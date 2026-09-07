@@ -57,3 +57,58 @@ data class MatchEntity(
     val assists: Int,
     val notes: String,
 )
+
+@Entity(tableName = "meal_entries", indices = [androidx.room.Index("date")])
+data class MealEntryEntity(
+    @PrimaryKey val id: String,
+    val date: String,
+    val name: String,
+    val photoName: String?,
+    val calories: Int,
+    val proteinGrams: Int,
+    val carbsGrams: Int,
+    val fatGrams: Int,
+    val source: String = "manual",
+)
+
+@Entity(tableName = "meal_estimates", primaryKeys = ["mealId", "source"],
+    foreignKeys = [androidx.room.ForeignKey(entity = MealEntryEntity::class,
+        parentColumns = ["id"], childColumns = ["mealId"], onDelete = androidx.room.ForeignKey.CASCADE)])
+data class MealEstimateEntity(
+    val mealId: String,
+    val source: String,
+    val photoReference: String,
+    val calories: Double,
+    val protein: Double,
+    val carbs: Double,
+    val fat: Double,
+    val estimatorVersion: String,
+    val createdAt: Long,
+    val inputDetails: String,
+) {
+    fun nutrients() = app.footyos.nutrition.Nutrients(calories, protein, carbs, fat)
+}
+
+@Entity(tableName = "estimate_comparisons",
+    foreignKeys = [androidx.room.ForeignKey(entity = MealEntryEntity::class,
+        parentColumns = ["id"], childColumns = ["mealId"], onDelete = androidx.room.ForeignKey.CASCADE)])
+data class EstimateComparisonEntity(
+    @PrimaryKey val mealId: String,
+    val score: Double?,
+    val calorieDelta: Double,
+    val proteinDelta: Double,
+    val carbsDelta: Double,
+    val fatDelta: Double,
+    val formulaVersion: String,
+    val createdAt: Long,
+)
+
+/** Durable request marker prevents automatic retries after process death or a timeout. */
+@Entity(tableName = "photo_analysis")
+data class PhotoAnalysisEntity(
+    @PrimaryKey val photoName: String,
+    val status: String,
+    val resultJson: String?,
+    val model: String,
+    val createdAt: Long,
+)

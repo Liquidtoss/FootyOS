@@ -13,7 +13,10 @@ class AppContainer(context: Context) {
         appContext,
         FootyDatabase::class.java,
         "footyos.db",
-    ).build()
+    ).addMigrations(app.footyos.data.local.NUTRITION_MIGRATION, app.footyos.data.local.ESTIMATE_MIGRATION, app.footyos.data.local.GEMINI_MIGRATION).build()
+
+    val geminiKeys = app.footyos.nutrition.GeminiKeyStore(appContext)
+    val geminiAnalysis = app.footyos.nutrition.GeminiAnalysis(database.footyDao(), app.footyos.photos.MealPhotos(appContext), geminiKeys)
 
     val repository = FootyRepository(database.footyDao())
     val settingsRepository = SettingsRepository(appContext)

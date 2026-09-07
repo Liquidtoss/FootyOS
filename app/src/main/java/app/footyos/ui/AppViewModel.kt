@@ -15,6 +15,8 @@ import app.footyos.domain.PerformancePlan
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -69,6 +71,30 @@ class AppViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = AppUiState(),
     )
+
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    private val today = kotlinx.coroutines.flow.flow {
+        while (true) {
+            emit(LocalDate.now().toString())
+            kotlinx.coroutines.delay(30_000)
+        }
+    }
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    val nutrition = today.distinctUntilChanged().flatMapLatest { date ->
+        combine(repository.observeMeals(date), repository.observeNutrition(date)) { meals, baseline ->
+            meals to baseline
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList<app.footyos.data.local.MealEntryEntity>() to null)
+
+    suspend fun saveMeal(meal: app.footyos.data.local.MealEntryEntity, offline: app.footyos.data.local.MealEstimateEntity?) {
+        require(meal.name.isNotBlank())
+        require(listOf(meal.calories, meal.proteinGrams, meal.carbsGrams, meal.fatGrams).all { it in 0..10000 })
+        repository.saveMeal(meal, offline)
+    }
+    fun deleteMeal(id: String) { viewModelScope.launch { repository.deleteMeal(id) } }
+    fun saveMacroGoals(protein: Int, carbs: Int, fat: Int) {
+        viewModelScope.launch { settingsRepository.updateMacros(protein, carbs, fat) }
+    }
 
     fun saveWeight(weightKg: Double) {
         viewModelScope.launch {

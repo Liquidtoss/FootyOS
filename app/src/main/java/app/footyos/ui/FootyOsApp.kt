@@ -81,6 +81,7 @@ import app.footyos.domain.PerformancePlan
 import app.footyos.reminders.ReminderRequest
 import app.footyos.ui.components.ExerciseReferenceDialog
 import app.footyos.ui.components.WeightChart
+import app.footyos.ui.components.MealPhotoCard
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -191,7 +192,11 @@ private fun NutritionScreen(state: AppUiState, viewModel: AppViewModel) {
             MetricCard("${PerformancePlan.calories(DayOfWeek.from(LocalDate.now()), state.settings.calorieOffset)}", "kcal target", Modifier.weight(1f))
             MetricCard("${state.settings.proteinTargetGrams} g", "protein target", Modifier.weight(1f))
         }
-        SectionCard("Log today") {
+        app.footyos.ui.components.GeminiSetup()
+        DailyNutrition(state, viewModel)
+        MealPhotoCard(onSave = viewModel::saveMeal)
+        SectionCard("Manual daily baseline") {
+            Text("Use this only for nutrition not already logged as meals. Saving replaces the manual baseline.")
             IntegerField("Calories", calories) { calories = it }
             IntegerField("Protein g", protein) { protein = it }
             IntegerField("Carbs g", carbs) { carbs = it }
@@ -571,4 +576,50 @@ private fun iconFor(destination: Destination) = when (destination) {
     Destination.Soccer -> Icons.Default.SportsSoccer
     Destination.Progress -> Icons.Default.Insights
     Destination.Schedule -> Icons.Default.CalendarMonth
+}
+
+@Composable
+private fun DailyNutrition(state: AppUiState, viewModel: AppViewModel) {
+    val nutrition by viewModel.nutrition.collectAsStateWithLifecycle()
+    val (meals, baseline) = nutrition
+    val settings = state.settings
+    var protein by rememberSaveable(settings.proteinTargetGrams) { mutableStateOf(settings.proteinTargetGrams.toString()) }
+    var carbs by rememberSaveable(settings.carbsTargetGrams) { mutableStateOf(settings.carbsTargetGrams.toString()) }
+    var fat by rememberSaveable(settings.fatTargetGrams) { mutableStateOf(settings.fatTargetGrams.toString()) }
+    SectionCard("Today's progress") {
+        val metrics = listOf(
+            Triple("Calories", meals.sumOf { it.calories } + (baseline?.calories ?: 0), PerformancePlan.calories(LocalDate.now().dayOfWeek, settings.calorieOffset)),
+            Triple("Protein g", meals.sumOf { it.proteinGrams } + (baseline?.proteinGrams ?: 0), settings.proteinTargetGrams),
+            Triple("Carbs g", meals.sumOf { it.carbsGrams } + (baseline?.carbsGrams ?: 0), settings.carbsTargetGrams),
+            Triple("Fat g", meals.sumOf { it.fatGrams } + (baseline?.fatGrams ?: 0), settings.fatTargetGrams),
+        )
+        metrics.forEach { (label, consumed, target) ->
+            Text("$label: $consumed / $target")
+            androidx.compose.material3.LinearProgressIndicator(
+                progress = { (consumed.toFloat() / target.coerceAtLeast(1)).coerceIn(0f, 1f) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Text(if (consumed <= target) "${target - consumed} remaining" else "${consumed - target} above goal", style = MaterialTheme.typography.bodySmall)
+        }
+        Text("Progress includes confirmed meals and your manual baseline. Photo estimates will remain approximate; check portions, oils and sauces.")
+    }
+    SectionCard("Daily macro goals") {
+        Text("Adjust these starting goals to your own plan.")
+        IntegerField("Protein g", protein) { protein = it }
+        IntegerField("Carbs g", carbs) { carbs = it }
+        IntegerField("Fat g", fat) { fat = it }
+        Button(enabled = listOf(protein, carbs, fat).all { (it.toIntOrNull() ?: 0) in 1..1000 }, onClick = {
+            viewModel.saveMacroGoals(protein.toInt(), carbs.toInt(), fat.toInt())
+        }) { Text("Save goals") }
+    }
+    SectionCard("Today's meals") {
+        if (meals.isEmpty()) Text("No meals logged yet.")
+        meals.forEach { meal ->
+            Text(meal.name, style = MaterialTheme.typography.titleMedium)
+            Text("${meal.calories} kcal · P ${meal.proteinGrams} g · C ${meal.carbsGrams} g · F ${meal.fatGrams} g")
+            Text("Confirmed · ${meal.source}", style = MaterialTheme.typography.bodySmall)
+            meal.photoName?.let { app.footyos.ui.components.SavedMealPhoto(it) }
+            TextButton(onClick = { viewModel.deleteMeal(meal.id) }) { Text("Delete meal") }
+        }
+    }
 }

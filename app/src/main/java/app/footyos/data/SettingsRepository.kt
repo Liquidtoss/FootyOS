@@ -15,6 +15,8 @@ data class UserSettings(
     val targetWeightKg: Double = 67.0,
     val proteinTargetGrams: Int = 170,
     val calorieOffset: Int = 0,
+    val carbsTargetGrams: Int = 250,
+    val fatTargetGrams: Int = 70,
 )
 
 class SettingsRepository(private val context: Context) {
@@ -22,6 +24,8 @@ class SettingsRepository(private val context: Context) {
         val startWeight = doublePreferencesKey("start_weight")
         val targetWeight = doublePreferencesKey("target_weight")
         val protein = intPreferencesKey("protein_target")
+        val carbs = intPreferencesKey("carbs_target")
+        val fat = intPreferencesKey("fat_target")
         val calorieOffset = intPreferencesKey("calorie_offset")
     }
 
@@ -31,7 +35,14 @@ class SettingsRepository(private val context: Context) {
             targetWeightKg = values[Keys.targetWeight] ?: 67.0,
             proteinTargetGrams = values[Keys.protein] ?: 170,
             calorieOffset = values[Keys.calorieOffset] ?: 0,
+            carbsTargetGrams = values[Keys.carbs] ?: 250,
+            fatTargetGrams = values[Keys.fat] ?: 70,
         )
+    }
+
+    suspend fun updateMacros(protein: Int, carbs: Int, fat: Int) {
+        require(protein in 1..1000 && carbs in 1..1000 && fat in 1..1000)
+        context.dataStore.edit { it[Keys.protein] = protein; it[Keys.carbs] = carbs; it[Keys.fat] = fat }
     }
 
     suspend fun updateCalories(offset: Int) {
