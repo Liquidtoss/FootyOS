@@ -15,7 +15,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -73,6 +74,26 @@ fun ExerciseReferenceDialog(
             }
         },
     )
+}
+
+@Composable
+fun ExerciseLoop(movement: Movement, playing: Boolean) {
+    var finish by remember(movement) { mutableStateOf(false) }
+    LaunchedEffect(movement, playing) {
+        if (playing) while (true) { delay(1800); finish = !finish }
+        else finish = false
+    }
+    val guide = guideFor(movement)
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        PositionFrame(
+            label = if (finish) "FINISH POSITION" else "START POSITION",
+            detail = if (finish) guide.finish else guide.start,
+            movement = movement, finish = finish, modifier = Modifier.fillMaxWidth(),
+        )
+        Text(guide.motion, style = MaterialTheme.typography.bodySmall)
+        Text("Position guide • tap ▶ for full technique video", style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
 }
 
 @Composable

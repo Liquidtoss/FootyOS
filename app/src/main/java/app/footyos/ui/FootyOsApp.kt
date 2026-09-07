@@ -231,27 +231,22 @@ private fun LegacyNutritionBaseline(viewModel: AppViewModel) {
 private fun TrainingScreen(state: AppUiState, viewModel: AppViewModel) {
     val day = DayOfWeek.from(LocalDate.now())
     var upperBody by rememberSaveable { mutableStateOf(day == DayOfWeek.MONDAY) }
+    var sessionActive by remember { mutableStateOf(false) }
     val ids = if (upperBody) ExerciseCatalog.monday else ExerciseCatalog.wednesday
-    var selected by remember { mutableStateOf<Exercise?>(null) }
     var logging by remember { mutableStateOf<Exercise?>(null) }
 
     ScreenColumn {
         PageHeading("Built for the pitch", "TRAINING")
-        HeroCard("YOUR PLAN", if (upperBody) "Upper body & prehab" else "Strength & power", "${ids.size} exercises · Home equipment") {}
-        Text("Today · ${todayTraining(day)}", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = upperBody, onClick = { upperBody = true }, label = { Text("Monday · Upper") })
-            FilterChip(selected = !upperBody, onClick = { upperBody = false }, label = { Text("Wednesday · Power") })
+            FilterChip(enabled = !sessionActive, selected = upperBody, onClick = { upperBody = true }, label = { Text("Monday · Upper") })
+            FilterChip(enabled = !sessionActive, selected = !upperBody, onClick = { upperBody = false }, label = { Text("Wednesday · Power") })
         }
-        ids.mapNotNull(ExerciseCatalog::byId).forEachIndexed { index, exercise ->
-            SectionCard(exercise.name) {
-                Text("${(index + 1).toString().padStart(2, '0')}  /  ${ids.size}    ·    ${exercise.prescription}", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = { selected = exercise }, modifier = Modifier.weight(1f)) { Text("View form") }
-                    Button(onClick = { logging = exercise }, modifier = Modifier.weight(1f)) { Text("Log sets") }
-                }
-            }
-        }
+        app.footyos.ui.components.TrainingSession(
+            exercises = ids.mapNotNull(ExerciseCatalog::byId),
+            completed = state.workouts.filter { it.date == LocalDate.now().toString() && it.sets > 0 }.map { it.exerciseId }.toSet(),
+            onLog = { exercise, _ -> logging = exercise },
+            onSessionActive = { sessionActive = it },
+        )
         if (day == DayOfWeek.FRIDAY) {
             SectionCard("Recovery") { Text("30–60 min easy walking pad + ~10 min mobility. No hard HIIT, sprinting, or heavy vest walking.") }
         }
@@ -261,14 +256,13 @@ private fun TrainingScreen(state: AppUiState, viewModel: AppViewModel) {
         }
     }
 
-    selected?.let { ExerciseReferenceDialog(it) { selected = null } }
     logging?.let { exercise -> WorkoutLogDialog(exercise, viewModel) { logging = null } }
 }
 
 @Composable
 private fun WorkoutLogDialog(exercise: Exercise, viewModel: AppViewModel, onDismiss: () -> Unit) {
     var load by remember { mutableStateOf("") }
-    var sets by remember { mutableStateOf("3") }
+    var sets by remember { mutableStateOf(exercise.prescription.substringBefore(" ×")) }
     var reps by remember { mutableStateOf("") }
     var rpe by remember { mutableStateOf("8") }
     AlertDialog(
