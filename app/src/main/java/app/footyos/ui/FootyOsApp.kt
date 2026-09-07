@@ -15,6 +15,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import java.time.format.DateTimeFormatter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.DirectionsRun
@@ -75,46 +100,59 @@ fun FootyOsApp(initialUri: Uri?) {
 
     LaunchedEffect(initialUri) { destinationFromUri(initialUri)?.let { destination = it } }
 
+    val screenState = rememberSaveableStateHolder()
     Scaffold(
-        topBar = { TopAppBar(title = { Column { Text("FootyOS"); Text(destination.label) } }) },
+        topBar = { TopAppBar(
+            title = { Text("FOOTYOS", style = MaterialTheme.typography.titleMedium, letterSpacing = 3.sp) },
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+            actions = { IconButton(onClick = { destination = Destination.Schedule }) { Icon(Icons.Default.CalendarMonth, "Schedule", tint = MaterialTheme.colorScheme.primary) } },
+        ) },
         bottomBar = {
-            NavigationBar {
-                Destination.entries.forEach { item ->
+            NavigationBar(containerColor = MaterialTheme.colorScheme.background, tonalElevation = 0.dp) {
+                Destination.entries.filter { it != Destination.Schedule }.forEach { item ->
                     NavigationBarItem(
                         selected = destination == item,
                         onClick = { destination = item },
                         icon = { Icon(iconFor(item), item.label) },
-                        label = { Text(item.label) },
+                        label = { Text(item.label, maxLines = 1, fontSize = 10.sp) },
+                        colors = NavigationBarItemDefaults.colors(indicatorColor = MaterialTheme.colorScheme.primaryContainer, selectedIconColor = MaterialTheme.colorScheme.primary, selectedTextColor = MaterialTheme.colorScheme.primary),
                     )
                 }
             }
         },
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
-            when (destination) {
-                Destination.Today -> TodayScreen(state, viewModel)
+        Crossfade(destination, modifier = Modifier.fillMaxSize().padding(padding), animationSpec = tween(180), label = "screen") { page ->
+          screenState.SaveableStateProvider(page.name) {
+            when (page) {
+                Destination.Today -> TodayScreen(state, viewModel) { destination = it }
                 Destination.Nutrition -> NutritionScreen(state, viewModel)
                 Destination.Training -> TrainingScreen(state, viewModel)
                 Destination.Soccer -> SoccerScreen(state, viewModel)
                 Destination.Progress -> ProgressScreen(state, viewModel)
                 Destination.Schedule -> ScheduleScreen(container)
             }
+          }
         }
     }
 }
 
 @Composable
-private fun TodayScreen(state: AppUiState, viewModel: AppViewModel) {
+private fun TodayScreen(state: AppUiState, viewModel: AppViewModel, navigate: (Destination) -> Unit) {
     val day = DayOfWeek.from(LocalDate.now())
     val calories = PerformancePlan.calories(day, state.settings.calorieOffset)
     ScreenColumn {
-        SectionCard("Current → target") {
-            Text("${"%.1f".format(state.currentWeightKg)} kg → ${state.settings.targetWeightKg.toInt()} kg")
-            Text("Planned goal: ${state.goalDate}")
+        PageHeading("Your daily edge", LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, d MMMM")))
+        HeroCard("TODAY’S FOCUS", todayTraining(day), "Build strength. Move better. Show up ready.") {
+            Button(onClick = { navigate(if (day in listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)) Destination.Training else Destination.Soccer) }, modifier = Modifier.fillMaxWidth()) { Text("View your session") }
         }
-        SectionCard("Today") {
-            Text("$calories kcal • ${state.settings.proteinTargetGrams} g protein")
-            Text(todayTraining(day))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            MetricCard("$calories", "kcal target", Modifier.weight(1f))
+            MetricCard("${state.settings.proteinTargetGrams} g", "protein target", Modifier.weight(1f))
+        }
+        SectionCard("Your trajectory") {
+            Text("${"%.1f".format(state.currentWeightKg)} kg", style = MaterialTheme.typography.headlineLarge)
+            Text("Target ${state.settings.targetWeightKg.toInt()} kg · Planned ${state.goalDate}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            TextButton(onClick = { navigate(Destination.Progress) }) { Text("See progress →") }
         }
         state.trend?.let { trend ->
             SectionCard("Coach check") {
@@ -129,7 +167,6 @@ private fun TodayScreen(state: AppUiState, viewModel: AppViewModel) {
             }
         }
         QuickWeight(viewModel)
-        SectionCard("Operating rule") { Text("Weight and waist trend down while speed, strength, availability, and match quality trend up.") }
     }
 }
 
@@ -149,9 +186,10 @@ private fun NutritionScreen(state: AppUiState, viewModel: AppViewModel) {
     var carbs by remember { mutableStateOf("") }
     var fat by remember { mutableStateOf("") }
     ScreenColumn {
-        SectionCard("Targets") {
-            Text("${PerformancePlan.calories(DayOfWeek.from(LocalDate.now()), state.settings.calorieOffset)} kcal")
-            Text("${state.settings.proteinTargetGrams} g protein")
+        PageHeading("Fuel your game", "NUTRITION")
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            MetricCard("${PerformancePlan.calories(DayOfWeek.from(LocalDate.now()), state.settings.calorieOffset)}", "kcal target", Modifier.weight(1f))
+            MetricCard("${state.settings.proteinTargetGrams} g", "protein target", Modifier.weight(1f))
         }
         SectionCard("Log today") {
             IntegerField("Calories", calories) { calories = it }
@@ -181,25 +219,25 @@ private fun NutritionScreen(state: AppUiState, viewModel: AppViewModel) {
 @Composable
 private fun TrainingScreen(state: AppUiState, viewModel: AppViewModel) {
     val day = DayOfWeek.from(LocalDate.now())
-    val ids = when (day) {
-        DayOfWeek.MONDAY -> ExerciseCatalog.monday
-        DayOfWeek.WEDNESDAY -> ExerciseCatalog.wednesday
-        else -> ExerciseCatalog.wednesday
-    }
+    var upperBody by rememberSaveable { mutableStateOf(day == DayOfWeek.MONDAY) }
+    val ids = if (upperBody) ExerciseCatalog.monday else ExerciseCatalog.wednesday
     var selected by remember { mutableStateOf<Exercise?>(null) }
     var logging by remember { mutableStateOf<Exercise?>(null) }
 
     ScreenColumn {
-        SectionCard("Today") { Text(todayTraining(day)) }
-        SectionCard(if (day == DayOfWeek.MONDAY) "Monday session" else "Wednesday session") {
-            ids.mapNotNull(ExerciseCatalog::byId).forEach { exercise ->
+        PageHeading("Built for the pitch", "TRAINING")
+        HeroCard("YOUR PLAN", if (upperBody) "Upper body & prehab" else "Strength & power", "${ids.size} exercises · Home equipment") {}
+        Text("Today · ${todayTraining(day)}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(selected = upperBody, onClick = { upperBody = true }, label = { Text("Monday · Upper") })
+            FilterChip(selected = !upperBody, onClick = { upperBody = false }, label = { Text("Wednesday · Power") })
+        }
+        ids.mapNotNull(ExerciseCatalog::byId).forEachIndexed { index, exercise ->
+            SectionCard(exercise.name) {
+                Text("${(index + 1).toString().padStart(2, '0')}  /  ${ids.size}    ·    ${exercise.prescription}", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Column(Modifier.weight(1f)) {
-                        Text(exercise.name)
-                        Text(exercise.prescription)
-                    }
-                    OutlinedButton(onClick = { selected = exercise }) { Text("Form") }
-                    OutlinedButton(onClick = { logging = exercise }) { Text("Log") }
+                    OutlinedButton(onClick = { selected = exercise }, modifier = Modifier.weight(1f)) { Text("View form") }
+                    Button(onClick = { logging = exercise }, modifier = Modifier.weight(1f)) { Text("Log sets") }
                 }
             }
         }
@@ -245,16 +283,22 @@ private fun WorkoutLogDialog(exercise: Exercise, viewModel: AppViewModel, onDism
 
 @Composable
 private fun PerformanceEntry(viewModel: AppViewModel) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
     var s10 by remember { mutableStateOf("") }
     var s20 by remember { mutableStateOf("") }
     var s30 by remember { mutableStateOf("") }
     var jump by remember { mutableStateOf("") }
     SectionCard("Performance test • every 4–6 weeks") {
+        TextButton(onClick = { expanded = !expanded }) { Text(if (expanded) "Close test" else "Record sprint & jump results") }
+        AnimatedVisibility(expanded) {
+          Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         DecimalField("10 m sprint (s)", s10) { s10 = it }
         DecimalField("20 m sprint (s)", s20) { s20 = it }
         DecimalField("30 m sprint (s)", s30) { s30 = it }
         DecimalField("Broad jump (cm)", jump) { jump = it }
         Button(onClick = { viewModel.savePerformance(s10.toDoubleOrNull(), s20.toDoubleOrNull(), s30.toDoubleOrNull(), jump.toDoubleOrNull()) }) { Text("Save test") }
+          }
+        }
     }
 }
 
@@ -262,13 +306,14 @@ private fun PerformanceEntry(viewModel: AppViewModel) {
 private fun SoccerScreen(state: AppUiState, viewModel: AppViewModel) {
     var matchDialog by remember { mutableStateOf(false) }
     ScreenColumn {
+        PageHeading("Own your wing", "SOCCER")
         SectionCard("Thursday winger laboratory • 75–90 min") {
-            Text("10 min dynamic warm-up + ball touches")
-            Text("3×10 m + 3×20 m + 2×30 m • full recovery")
-            Text("10 min left-foot passing + receiving")
-            Text("15 min first touch + scanning")
-            Text("10–15 min 1v1 / change of pace")
-            Text("15–20 min finishing + left-foot cutbacks/crosses")
+            PlanRow("01", "Warm up", "10 min · Dynamic movement + ball touches")
+            PlanRow("02", "Find your speed", "3×10 m + 3×20 m + 2×30 m · Full recovery")
+            PlanRow("03", "Build your left foot", "10 min · Passing + receiving")
+            PlanRow("04", "See the next move", "15 min · First touch + scanning")
+            PlanRow("05", "Beat your player", "10–15 min · 1v1 + change of pace")
+            PlanRow("06", "Make it count", "15–20 min · Finishing + cutbacks + crosses")
         }
         SectionCard("Left-wing identity") {
             Text("Shown outside → cut inside onto the right.")
@@ -348,6 +393,7 @@ private fun MatchDialog(viewModel: AppViewModel, onDismiss: () -> Unit) {
 @Composable
 private fun ProgressScreen(state: AppUiState, viewModel: AppViewModel) {
     ScreenColumn {
+        PageHeading("Every session counts", "PROGRESS")
         SectionCard("Weight trajectory") {
             Text("${"%.1f".format(state.currentWeightKg)} kg • ${"%.1f".format(state.currentWeightKg - state.settings.targetWeightKg)} kg remaining")
             WeightChart(state.weights, state.settings.targetWeightKg)
@@ -378,11 +424,12 @@ private fun ScheduleScreen(container: app.footyos.data.AppContainer) {
     val context = LocalContext.current
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
     ScreenColumn {
+        PageHeading("Make room for better", "YOUR WEEK")
         SectionCard("Weekly anchors") {
-            Text("Tue • 8–10 pm • 11v11")
-            Text("Thu • 8 pm • winger development")
-            Text("Sat • 7–9 am • 11v11")
-            Text("Sun • 7–9 am • 11v11")
+            PlanRow("TUE", "Match night", "8–10 pm · 11v11")
+            PlanRow("THU", "Winger development", "8 pm · Technique + speed")
+            PlanRow("SAT", "Weekend football", "7–9 am · 11v11")
+            PlanRow("SUN", "Back on the pitch", "7–9 am · 11v11")
         }
         SectionCard("Notifications") {
             Button(onClick = {
@@ -413,7 +460,7 @@ private fun ScheduleScreen(container: app.footyos.data.AppContainer) {
                 )
                 context.startActivity(container.calendarRepository.insertIntent(draft))
             }) { Text("Add Thursday to calendar") }
-            Text("Calendar events include a FootyOS app URI. Native FootyOS reminders always open the matching screen directly.")
+            Text("Keep your next session close. Your reminder opens the session in FootyOS.")
         }
     }
 }
@@ -421,17 +468,17 @@ private fun ScheduleScreen(container: app.footyos.data.AppContainer) {
 @Composable
 private fun ScreenColumn(content: @Composable ColumnScope.() -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         content = content,
     )
 }
 
 @Composable
 private fun SectionCard(title: String, content: @Composable ColumnScope.() -> Unit) {
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(title)
+    Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
+        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
             content()
         }
     }
@@ -439,12 +486,57 @@ private fun SectionCard(title: String, content: @Composable ColumnScope.() -> Un
 
 @Composable
 private fun IntegerField(label: String, value: String, onValueChange: (String) -> Unit) {
-    TextField(value, { onValueChange(it.filter(Char::isDigit)) }, label = { Text(label) }, modifier = Modifier.fillMaxWidth())
+    OutlinedTextField(value, { onValueChange(it.filter(Char::isDigit)) }, label = { Text(label) }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth())
 }
 
 @Composable
 private fun DecimalField(label: String, value: String, onValueChange: (String) -> Unit) {
-    TextField(value, { onValueChange(it.filter { c -> c.isDigit() || c == '.' }) }, label = { Text(label) }, modifier = Modifier.fillMaxWidth())
+    OutlinedTextField(value, { onValueChange(it.filter { c -> c.isDigit() || c == '.' }) }, label = { Text(label) }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth())
+}
+
+@Composable
+private fun PageHeading(title: String, eyebrow: String) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(eyebrow.uppercase(), style = MaterialTheme.typography.labelSmall, letterSpacing = 1.5.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(title, style = MaterialTheme.typography.headlineLarge)
+    }
+}
+
+@Composable
+private fun HeroCard(eyebrow: String, title: String, detail: String, content: @Composable ColumnScope.() -> Unit) {
+    Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surface) {
+        Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.surface))).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Text(eyebrow, style = MaterialTheme.typography.labelSmall, letterSpacing = 1.5.sp, color = MaterialTheme.colorScheme.primary)
+            Text(title, style = MaterialTheme.typography.headlineMedium)
+            Text(detail, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            content()
+        }
+    }
+}
+
+@Composable
+private fun MetricCard(value: String, label: String, modifier: Modifier = Modifier) {
+    Surface(modifier = modifier, shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surface) {
+        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(value, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+            Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun PlanRow(marker: String, title: String, detail: String) {
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Surface(shape = MaterialTheme.shapes.small, color = MaterialTheme.colorScheme.primaryContainer) {
+            Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+                Text(marker, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+            }
+        }
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(detail, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
 }
 
 private fun todayTraining(day: DayOfWeek): String = when (day) {
