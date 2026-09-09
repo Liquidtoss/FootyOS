@@ -61,8 +61,9 @@ source detail rather than replacing the athlete with an unrelated rig. Detail is
 restricted to exposed skin to prevent the body protruding through clothing;
 established finger and sole geometry is largely retained. Smooth wrist weights
 replace the abrupt automatic-weight/rigid-hand boundary. Subdivision is applied
-**before** the armature so existing motion and skinning stay live. Animation
-sampler bytes were compared with the prior assets and match for all 12 exercises.
+**before** the armature so existing motion and skinning stay live. The initial surface-only revision preserved every animation sampler byte. The
+wrist correction below subsequently updates forearm roll and compensates hand
+local transforms while preserving their world-space paths.
 
 To refresh surfaces without reauthoring animation:
 
@@ -83,3 +84,21 @@ share this target; the carry has extra distance for its walking path. This avoid
 framing the mat's origin or scaling from equipment-heavy bind-pose bounds.
 The emulator library test captures each preset in its external `viewer-review`
 folder for visual review in addition to checking actual rendered motion.
+
+### Anatomical wrist correction
+
+The broad wrist blend in the initial refinement let hand rotation bend 7.5 cm
+of the forearm shaft. The export now keeps the shaft on the forearm bone and
+limits the blend to a 3.5 cm wrist transition (starting 5 mm before the joint).
+Forearm axial rotation follows the palm, avoiding an abrupt twist at the wrist.
+The hand's original pose matrix is restored on each sampled frame, preserving
+palm contact and the kettlebell grip. `correct_forearm_twist` checks the elbow,
+wrist, and forearm endpoint against the original path to within 0.1 mm on every
+frame before export. This correction is applied to both arms in every exercise.
+
+Validation of the rebuilt library: all 12 clips retain seamless endpoints and
+real motion. Maximum endpoint deviation during the correction was 0.062 mm
+(the supported Copenhagen hold); the other clips stayed below 0.001 mm.
+The complete palm pose matrix is checked on every authored frame. Quaternion
+signs are made continuous before baking to avoid interpolation jumps. A close-up
+of the corrected surface is saved at `assets/training3d/previews/wrist_alignment.png`.
