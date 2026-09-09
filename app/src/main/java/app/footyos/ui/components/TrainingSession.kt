@@ -305,7 +305,7 @@ private fun GuidedPlayer(exercise: Exercise, autoStart: Boolean, overlayOpen: Bo
         if (running) TextButton(onClick = { paused = true; update(GuidedDrill()) }) { Text("End exercise") }
     }
     if (audio && !voiceReady) Text("Voice unavailable on this device. Follow the on-screen cues.", style = MaterialTheme.typography.bodySmall)
-    ExerciseLoop(exercise.movement, playing = !paused && drill.phase == DrillPhase.Work)
+    ExerciseLoop(exercise.movement, playing = !overlayOpen && (!running || !paused))
     Text(cue, style = MaterialTheme.typography.bodyMedium)
     if (drill.phase == DrillPhase.Complete) {
         Text("${plan.sets} sets complete", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)

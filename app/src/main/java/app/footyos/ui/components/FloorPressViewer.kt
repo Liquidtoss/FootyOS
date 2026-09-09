@@ -98,7 +98,9 @@ fun FloorPressViewer(playing: Boolean = true) {
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TextButton(onClick = { paused = !paused }) { Text(if (paused) "Play demo" else "Pause demo") }
+                    TextButton(enabled = playing, onClick = { paused = !paused }) {
+                        Text(if (!playing) "Demo paused" else if (paused) "Play demo" else "Pause demo")
+                    }
                     TextButton(onClick = { slow = !slow }) { Text(if (slow) "0.5×" else "1×") }
                     TextButton(onClick = { cameraPreset = 0; cameraRevision++ }) { Text("Reset view") }
                 }

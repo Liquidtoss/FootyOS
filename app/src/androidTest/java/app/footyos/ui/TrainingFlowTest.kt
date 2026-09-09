@@ -45,6 +45,45 @@ class TrainingFlowTest {
         }
     }
 
+    @Test fun guidedPreviewActuallyMovesBeforeStartingAndStopsWhenPaused() {
+        compose.onNodeWithText("Guided").performScrollTo().performClick()
+        compose.onNodeWithText("Pause demo").performScrollTo().assertIsDisplayed()
+        compose.waitUntil(10_000) {
+            compose.onAllNodesWithText("Loading 3D…").fetchSemanticsNodes().isEmpty()
+        }
+        // SurfaceView animation uses the real render clock, not Compose's test clock.
+        android.os.SystemClock.sleep(2000)
+        val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+        fun pixels(): IntArray {
+            val screenshot = automation.takeScreenshot()
+            val bitmap = screenshot.copy(android.graphics.Bitmap.Config.ARGB_8888, false)
+            val result = IntArray(bitmap.width * bitmap.height)
+            bitmap.getPixels(result, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+            bitmap.recycle(); screenshot.recycle()
+            return result
+        }
+        // Ignore small tone-mapping/dithering changes; count substantial RGB changes.
+        fun changed(a: IntArray, b: IntArray) = a.indices.count {
+            val first = a[it]; val second = b[it]
+            kotlin.math.abs(((first shr 16) and 255) - ((second shr 16) and 255)) +
+                kotlin.math.abs(((first shr 8) and 255) - ((second shr 8) and 255)) +
+                kotlin.math.abs((first and 255) - (second and 255)) > 60
+        }
+        val moving = pixels()
+        android.os.SystemClock.sleep(1500)
+        assertTrue("The rendered demo should move before starting a workout", changed(moving, pixels()) > 1000)
+        compose.onNodeWithText("Pause demo").performClick()
+        compose.onNodeWithText("Play demo").assertIsDisplayed()
+        android.os.SystemClock.sleep(700)
+        val paused = pixels()
+        android.os.SystemClock.sleep(1000)
+        assertTrue("Pausing the demo should hold its pose", changed(paused, pixels()) < 1000)
+        compose.onNodeWithText("Play demo").performClick()
+        compose.onNodeWithText("Pause demo").assertIsDisplayed()
+        android.os.SystemClock.sleep(1500)
+        assertTrue("Resuming should move the model again", changed(paused, pixels()) > 1000)
+    }
+
     @Test fun savingAwardsRecordAndAdvancesOnlyOnce() {
         compose.onNodeWithText("Log sets").performScrollTo().performClick()
         compose.onNodeWithText("Save & next").assertIsNotEnabled()
