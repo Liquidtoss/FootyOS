@@ -76,11 +76,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import app.footyos.FootyOsApplication
 import app.footyos.calendar.CalendarEventDraft
 import app.footyos.data.local.MatchEntity
-import app.footyos.domain.Exercise
 import app.footyos.domain.ExerciseCatalog
 import app.footyos.domain.PerformancePlan
 import app.footyos.reminders.ReminderRequest
-import app.footyos.ui.components.ExerciseReferenceDialog
 import app.footyos.ui.components.WeightChart
 import app.footyos.ui.components.MealPhotoCard
 import java.time.DayOfWeek
@@ -233,57 +231,25 @@ private fun TrainingScreen(state: AppUiState, viewModel: AppViewModel) {
     var upperBody by rememberSaveable { mutableStateOf(day == DayOfWeek.MONDAY) }
     var sessionActive by remember { mutableStateOf(false) }
     val ids = if (upperBody) ExerciseCatalog.monday else ExerciseCatalog.wednesday
-    var logging by remember { mutableStateOf<Exercise?>(null) }
 
     ScreenColumn {
         PageHeading("Built for the pitch", "TRAINING")
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (!sessionActive) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(enabled = !sessionActive, selected = upperBody, onClick = { upperBody = true }, label = { Text("Monday · Upper") })
             FilterChip(enabled = !sessionActive, selected = !upperBody, onClick = { upperBody = false }, label = { Text("Wednesday · Power") })
         }
         app.footyos.ui.components.TrainingSession(
             exercises = ids.mapNotNull(ExerciseCatalog::byId),
             completed = state.workouts.filter { it.date == LocalDate.now().toString() && it.sets > 0 }.map { it.exerciseId }.toSet(),
-            onLog = { exercise, _ -> logging = exercise },
+            history = state.workouts,
+            onSave = viewModel::saveWorkout,
             onSessionActive = { sessionActive = it },
         )
         if (day == DayOfWeek.FRIDAY) {
             SectionCard("Recovery") { Text("30–60 min easy walking pad + ~10 min mobility. No hard HIIT, sprinting, or heavy vest walking.") }
         }
         PerformanceEntry(viewModel)
-        state.workouts.firstOrNull()?.let { latest ->
-            SectionCard("Latest strength entry") { Text("${latest.exerciseId}: ${latest.loadLb ?: "—"} lb • ${latest.sets} sets • ${latest.reps ?: "—"} reps") }
-        }
     }
-
-    logging?.let { exercise -> WorkoutLogDialog(exercise, viewModel) { logging = null } }
-}
-
-@Composable
-private fun WorkoutLogDialog(exercise: Exercise, viewModel: AppViewModel, onDismiss: () -> Unit) {
-    var load by remember { mutableStateOf("") }
-    var sets by remember { mutableStateOf(exercise.prescription.substringBefore(" ×")) }
-    var reps by remember { mutableStateOf("") }
-    var rpe by remember { mutableStateOf("8") }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(exercise.name) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                DecimalField("Load lb", load) { load = it }
-                IntegerField("Sets", sets) { sets = it }
-                IntegerField("Reps", reps) { reps = it }
-                IntegerField("RPE", rpe) { rpe = it }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                viewModel.saveWorkout(exercise.id, load.toDoubleOrNull(), sets.toIntOrNull() ?: 0, reps.toIntOrNull(), rpe.toIntOrNull())
-                onDismiss()
-            }) { Text("Save") }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
-    )
 }
 
 @Composable

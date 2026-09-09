@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "format": "glb",
+  "maxBytesPerAsset": 8388608,
+  "exercises": [
+    {
+      "id": "floor_press",
+      "status": "prototype",
+      "runtimePath": "app/src/main/assets/training3d/floor_press.glb",
+      "requiredClips": [
+        "rep"
+      ],
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "c966ae291d1f6132a4573e73a197e9fa51c7faf1f64048b1e1a119ba018315d5",
+      "reviewEvidence": "assets/training3d/previews/floor_press_review.md",
+      "variation": "Single-arm, left-side demonstration; bell outside working forearm"
+    },
+    {
+      "id": "row",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/row.glb",
+      "requiredClips": [
+        "left",
+        "right"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "overhead_press",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/overhead_press.glb",
+      "requiredClips": [
+        "left",
+        "right"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "suitcase_carry",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/suitcase_carry.glb",
+      "requiredClips": [
+        "left",
+        "right"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "swing",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/swing.glb",
+      "requiredClips": [
+        "rep"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "goblet_squat",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/goblet_squat.glb",
+      "requiredClips": [
+        "rep"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "split_squat",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/split_squat.glb",
+      "requiredClips": [
+        "left",
+        "right"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "single_leg_rdl",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/single_leg_rdl.glb",
+      "requiredClips": [
+        "left",
+        "right"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "calf_raise",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/calf_raise.glb",
+      "requiredClips": [
+        "rep"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "tibialis_raise",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/tibialis_raise.glb",
+      "requiredClips": [
+        "rep"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "copenhagen",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/copenhagen.glb",
+      "requiredClips": [
+        "left",
+        "right"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    },
+    {
+      "id": "hamstring_slider",
+      "status": "pending",
+      "runtimePath": "app/src/main/assets/training3d/hamstring_slider.glb",
+      "requiredClips": [
+        "rep"
+      ],
+      "sourceUrl": null,
+      "licensePath": null,
+      "sha256": null,
+      "reviewEvidence": null
+    }
+  ]
+}

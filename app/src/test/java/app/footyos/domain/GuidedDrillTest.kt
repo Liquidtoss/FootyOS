@@ -28,6 +28,9 @@ class GuidedDrillTest {
         assertEquals(4, drill.round)
         assertEquals(drill, drill.tick(plan))
     }
+    @Test fun floorPressWorksOneSideAtATime() {
+        assertEquals(DrillPlan(3, 2), ExerciseCatalog.byId("floor_press")!!.drillPlan())
+    }
     @Test fun everyCatalogPrescriptionHasAPlan() {
         ExerciseCatalog.exercises.forEach { assertTrue(it.drillPlan().sets in 2..4) }
         assertEquals(DrillPlan(3, 2, 40), ExerciseCatalog.byId("suitcase_carry")!!.drillPlan())

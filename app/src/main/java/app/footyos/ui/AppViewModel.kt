@@ -125,25 +125,12 @@ class AppViewModel(
         }
     }
 
-    fun saveWorkout(
-        exerciseId: String,
-        loadLb: Double?,
-        sets: Int,
-        reps: Int?,
-        rpe: Int?,
-    ) {
-        viewModelScope.launch {
-            repository.saveWorkoutEntry(
-                WorkoutEntryEntity(
-                    date = LocalDate.now().toString(),
-                    exerciseId = exerciseId,
-                    loadLb = loadLb,
-                    sets = sets,
-                    reps = reps,
-                    rpe = rpe,
-                ),
-            )
-        }
+    suspend fun saveWorkout(entry: WorkoutEntryEntity) {
+        require(entry.sets in 1..100)
+        require(entry.loadLb == null || (entry.loadLb.isFinite() && entry.loadLb in 0.0..2000.0))
+        require(entry.reps == null || entry.reps in 1..1000)
+        require(entry.rpe == null || entry.rpe in 1..10)
+        repository.saveWorkoutEntry(entry)
     }
 
     fun savePerformance(sprint10: Double?, sprint20: Double?, sprint30: Double?, jumpCm: Double?) {

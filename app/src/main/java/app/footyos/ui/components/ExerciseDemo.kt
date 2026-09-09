@@ -54,7 +54,8 @@ fun ExerciseReferenceDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                ExerciseMovementGuide(exercise.movement)
+                if (exercise.id == "floor_press") FloorPressViewer()
+                else ExerciseMovementGuide(exercise.movement)
                 Text(exercise.prescription, color = MaterialTheme.colorScheme.primary)
                 Text("Form cues", style = MaterialTheme.typography.titleSmall)
                 exercise.cues.forEach { Text("• $it") }
@@ -67,7 +68,8 @@ fun ExerciseReferenceDialog(
                     Text("Watch reference • ${exercise.reference.source}")
                 }
                 Text(
-                    "The diagrams highlight the main positions. Use the reference video for full setup, tempo, and technique.",
+                    if (exercise.id == "floor_press") "Rotate the 3D demonstration to inspect form. Use the reference video for full setup and technique."
+                    else "The diagrams highlight the main positions. Use the reference video for full setup, tempo, and technique.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -78,6 +80,10 @@ fun ExerciseReferenceDialog(
 
 @Composable
 fun ExerciseLoop(movement: Movement, playing: Boolean) {
+    if (movement == Movement.Press) {
+        FloorPressViewer(playing = playing)
+        return
+    }
     var finish by remember(movement) { mutableStateOf(false) }
     LaunchedEffect(movement, playing) {
         if (playing) while (true) { delay(1800); finish = !finish }

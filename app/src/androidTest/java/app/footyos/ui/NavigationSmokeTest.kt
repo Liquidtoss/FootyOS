@@ -37,7 +37,7 @@ class NavigationSmokeTest {
         compose.onNodeWithText("Paused").assertIsDisplayed()
         capture("guided-paused")
         compose.onNodeWithText("End exercise").performScrollTo().performClick()
-        compose.onNodeWithText("Simple · log only").performScrollTo().performClick()
+        compose.onNodeWithText("Simple").performScrollTo().performClick()
         compose.onNodeWithText("Log sets").performScrollTo().performClick()
         compose.onNodeWithText("Cancel").performClick()
         compose.onNodeWithText("Soccer", useUnmergedTree = true).performClick()

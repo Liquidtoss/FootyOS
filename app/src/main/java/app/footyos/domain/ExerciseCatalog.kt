@@ -35,11 +35,13 @@ object ExerciseCatalog {
         Exercise(
             id = "floor_press",
             name = "Kettlebell floor press",
-            prescription = "3 × 8–12",
+            prescription = "3 × 8–12 / side",
             movement = Movement.Press,
             cues = listOf(
+                "Plant both feet flat and brace your core; keep your ribs down and hips still.",
+                "Keep the free arm supported with its palm flat on the floor; wrap fingers and thumb around the handle.",
                 "Keep the shoulder blade settled against the floor.",
-                "Stack the wrist over the elbow.",
+                "Press one arm at a time, with the bell outside the forearm and the wrist over the elbow.",
                 "Lower under control until the upper arm reaches the floor.",
             ),
             mistakes = listOf("Excessive elbow flare", "Bent wrist", "Bouncing off the floor"),

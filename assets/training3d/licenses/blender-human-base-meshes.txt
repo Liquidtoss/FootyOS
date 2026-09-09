@@ -1,0 +1,22 @@
+Asset: Body Male - Realistic (GEO-body_male_realistic and associated eyes)
+Author in source collection metadata: Julien Kaspar
+License in source collection metadata: CC0
+Source: Blender Studio / Blender Human Base Meshes asset bundle
+Download: https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip
+Official listing: https://www.blender.org/download/demo-files/
+
+The archive's human_base_meshes_bundle.blend README identifies the contents as:
+“Human Base Meshes: Asset Bundle - Version 1.01”
+“All provided assets are public domain under the CC0 license.”
+
+The same .blend also contains an unrelated legacy text block titled License
+mentioning the Rain Rig under CC-BY. The selected Body Male - Realistic asset
+collection explicitly declares Julien Kaspar / CC0, consistent with the asset
+bundle README. No Rain Rig was imported into this prototype. The skeleton,
+clothing shells, equipment and animation were authored for FootyOS.
+
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+
+footyos-human.zip SHA-256: 46a912c0524072ac3b78c35d5d2471df7b8df102394a050ca8cd7184e3393648
+
+footyos-blender.dmg SHA-256: e3a3d7aac381fb4e4d05197f99cd8899484d7e8bc4497c134066e6733f372238

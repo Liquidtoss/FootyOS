@@ -7,3 +7,7 @@ local.properties
 *.iml
 *.jks
 *.keystore
+
+# Python tool caches
+__pycache__/
+*.py[cod]

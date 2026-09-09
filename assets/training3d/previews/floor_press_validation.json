@@ -1,0 +1,12 @@
+{
+  "bytes": 1655184,
+  "triangles": 46122,
+  "sha256": "c966ae291d1f6132a4573e73a197e9fa51c7faf1f64048b1e1a119ba018315d5",
+  "skins": 1,
+  "clips": [
+    "rep"
+  ],
+  "animationChannels": 58,
+  "durationSeconds": 4.033333333333333,
+  "loopEndpointErrors": []
+}
