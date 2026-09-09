@@ -12,7 +12,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "c966ae291d1f6132a4573e73a197e9fa51c7faf1f64048b1e1a119ba018315d5",
+      "sha256": "3b0ea32a31e10a244d8a42752ec89026b40ada8d629704f71a4bdcf8db0b18ea",
       "reviewEvidence": "assets/training3d/previews/floor_press_review.md",
       "variation": "Single-arm, left-side demonstration; bell outside working forearm"
     },
@@ -25,7 +25,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "c486d3ed41b0ae58944074a1fc397969cce85e4e0ea17fb0abe4352ee46ca1ad",
+      "sha256": "fc9bcd844a5e14cf0fe06824889ef5d31ebc3544b9133c10010faf0304f8c0cb",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "One-side demonstration; repeat on other side"
     },
@@ -38,7 +38,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "ab982b6b0f7a240c5bb7095fb9f53c9acf817c71cfb3b7c9866c42a2168f90c7",
+      "sha256": "75b5c7e600b11e537f54f705c6a0a1f9ef30dfa36f7c241237f1482411de27fc",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "One-side demonstration; repeat on other side"
     },
@@ -51,7 +51,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "ac3593c168c843eab69a6d7e689f1c4dd036cc14dd05749aeceaa1f6e666f468",
+      "sha256": "dea208e6ce1467c434f0b0808f4fc6f0241753a911e0eb13b2284ca38e0832b9",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "One-side demonstration; repeat on other side"
     },
@@ -64,7 +64,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "92a169b66d37c8ef1789464d40eb47beabaa02579db607ed5cdfc7ea98e4403b",
+      "sha256": "b39b27932bfef00e007891355657bf43e015590534f3588fc146900501ffa4e4",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "Bilateral demonstration"
     },
@@ -77,7 +77,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "2c8cd5ccc792538504bb15fc63b0ddbc07b2e77591d02f4acfcceff70fafc263",
+      "sha256": "1d7846ad1f6c2a62d97c4a709369ebe96b80854d302845a580d0895a622e9987",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "Bilateral demonstration"
     },
@@ -90,7 +90,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "c16a5cc18dfe36b6e94ae5cdd0c3110f2538b128710f76461909440c03fe30ee",
+      "sha256": "30f0f6b9afc470bbda1b2446992bf5a70effb72a15c2d02255e39ab7c8ca885b",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "One-side demonstration; repeat on other side"
     },
@@ -103,7 +103,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "bbdadbf138fe5ec28518974b46a8181c62e23209bfe76fddff3ac74cff1c9d64",
+      "sha256": "2549f2e15b7c65721baeee57c3d26ea4480ffd40b15f4562b592e74d42f1fc69",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "One-side demonstration; repeat on other side"
     },
@@ -116,7 +116,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "f83b8d9e915772bdce1bdec155b412f15f4a96dfda0ed682c3b12067d4aa6662",
+      "sha256": "1d0b506ad2cfb8daf78b76c52b36b09c8e795535c64f947991bee1f1e38027b7",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "Bilateral demonstration"
     },
@@ -129,7 +129,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "d309d0798cc52b6a85f16a9e61207e4f4da815523ff4d49d030a1445fa01bccb",
+      "sha256": "5db126f8bb554ec5e54bbeb45546a68f595b4ef7fc9d6d9b766db4878023485a",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "Bilateral demonstration"
     },
@@ -142,7 +142,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "37ff6cfc7aa4c7ab40785a7362f5ec37809c664de872e673b1ac4df31ddac964",
+      "sha256": "9ec226bdea0d5f1097f77dc7fc234a2a339cce68a77afbb62c8acdd273ea5240",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "Knee-supported isometric hold"
     },
@@ -155,7 +155,7 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "6ad26ac579fcd48c2c5d014f251ade1e3dd8aa7957dc2decce1145250b3da84e",
+      "sha256": "2ad934cbc53cb86f6351d2415629a1080eeda2acdfeebbf7bfec5643d5a0d67a",
       "reviewEvidence": "docs/training-3d-library.md",
       "variation": "Bilateral demonstration"
     }

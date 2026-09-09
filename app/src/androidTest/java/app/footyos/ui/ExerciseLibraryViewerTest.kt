@@ -54,9 +54,25 @@ class ExerciseLibraryViewerTest {
                 }
             }
             // A timed Copenhagen hold only has subtle breathing, checked in the GLB validator.
+            val evidence = java.io.File(
+                InstrumentationRegistry.getInstrumentation().targetContext.getExternalFilesDir(null),
+                "viewer-review")
+            evidence.mkdirs()
+            fun capture(label: String) {
+                android.os.SystemClock.sleep(700)
+                val shot = automation.takeScreenshot()
+                java.io.File(evidence, "${exercise.id}_$label.png").outputStream().use {
+                    shot.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it)
+                }
+                shot.recycle()
+            }
+            if (exercise.id == "copenhagen") android.os.SystemClock.sleep(3000)
+            capture("default")
             if (exercise.id != "copenhagen") assertTrue("${exercise.id} should visibly animate ($changed pixels)", changed > 100)
             compose.onNodeWithText("Side").performClick()
+            capture("side")
             compose.onNodeWithText("Front").performClick()
+            capture("front")
             compose.onNodeWithText("Reset view").performClick()
             compose.onNodeWithText("Pause demo").assertIsDisplayed()
         }

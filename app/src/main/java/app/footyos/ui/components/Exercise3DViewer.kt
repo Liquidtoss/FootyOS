@@ -44,9 +44,7 @@ private fun Exercise3DScene(exercise: Exercise, playing: Boolean) {
             val result = remember(loader) {
                 runCatching {
                     ModelNode(loader.createModelInstance("training3d/${exercise.id}.glb"),
-                        autoAnimate = false,
-                        scaleToUnits = if (exercise.id in setOf("floor_press", "hamstring_slider", "copenhagen")) 2f else 3f,
-                        centerOrigin = Position(0f))
+                        autoAnimate = false)
                 }
             }
             val model = result.getOrNull()
@@ -57,17 +55,27 @@ private fun Exercise3DScene(exercise: Exercise, playing: Boolean) {
                 DisposableEffect(model) { onDispose { model.destroy() } }
                 // Keep animation time outside the camera key: changing views never restarts a rep.
                 val clock = remember(model) { PlaybackClock() }
-                key(cameraRevision) {
+                run {
                     val floorExercise = exercise.id in setOf("floor_press", "hamstring_slider", "copenhagen")
-                    val height = if (floorExercise) 1.2f else .5f
+                    // Assets use metres with the mat at y=0. Aim at the athlete,
+                    // not the ground; bind-pose bounds include oversized equipment.
+                    val target = Position(0f, if (floorExercise) .45f else 1f, 0f)
+                    val distance = if (exercise.id == "suitcase_carry") 4.6f else 3.6f
                     val home = when (cameraPreset) {
-                        1 -> Position(3.2f, height, 0f)
-                        2 -> Position(0f, height, 3.2f)
-                        else -> Position(2.5f, if (floorExercise) 2f else 1.3f, 2.5f)
+                        1 -> Position(distance, target.y + .25f, 0f)
+                        2 -> Position(0f, target.y + .25f, distance)
+                        else -> Position(distance * .7f, target.y + if (floorExercise) 1.8f else .8f, distance * .7f)
                     }
                     val camera = rememberCameraNode(engine) {
                         position = home
-                        lookAt(Position(0f))
+                        lookAt(target)
+                    }
+                    LaunchedEffect(cameraRevision) {
+                        camera.position = home
+                        camera.lookAt(target)
+                    }
+                    val manipulator = key(cameraRevision) {
+                        rememberCameraManipulator(home, target)
                     }
                     val renderView = rememberView(engine).apply {
                         setShadowingEnabled(true)
@@ -81,8 +89,12 @@ private fun Exercise3DScene(exercise: Exercise, playing: Boolean) {
                         view = renderView,
                         modelLoader = loader,
                         cameraNode = camera,
-                        cameraManipulator = rememberCameraManipulator(home, Position(0f)),
+                        cameraManipulator = manipulator,
                         childNodes = listOf(model),
+                        onViewUpdated = {
+                            if (width > 0 && height > 0)
+                                manipulator.setViewport(width, height)
+                        },
                         onViewCreated = {
                             setOnTouchListener { view, event ->
                                 view.parent?.requestDisallowInterceptTouchEvent(

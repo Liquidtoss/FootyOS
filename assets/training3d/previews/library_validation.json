@@ -1,84 +1,84 @@
 [
   {
     "exercise": "floor_press",
-    "bytes": 1655184,
+    "bytes": 5519016,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 3,
     "loopSeamPass": true
   },
   {
     "exercise": "row",
-    "bytes": 1627692,
+    "bytes": 5501120,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 4,
     "loopSeamPass": true
   },
   {
     "exercise": "overhead_press",
-    "bytes": 1625260,
+    "bytes": 5498688,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 3,
     "loopSeamPass": true
   },
   {
     "exercise": "suitcase_carry",
-    "bytes": 1680540,
+    "bytes": 5554064,
     "durationSeconds": 8.033333778381348,
     "movingChannels": 16,
     "loopSeamPass": true
   },
   {
     "exercise": "swing",
-    "bytes": 1634472,
+    "bytes": 5507900,
     "durationSeconds": 2.0333333015441895,
     "movingChannels": 16,
     "loopSeamPass": true
   },
   {
     "exercise": "goblet_squat",
-    "bytes": 1647328,
+    "bytes": 5520756,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 15,
     "loopSeamPass": true
   },
   {
     "exercise": "split_squat",
-    "bytes": 1591548,
+    "bytes": 5462832,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 7,
     "loopSeamPass": true
   },
   {
     "exercise": "single_leg_rdl",
-    "bytes": 1640448,
+    "bytes": 5513876,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 11,
     "loopSeamPass": true
   },
   {
     "exercise": "calf_raise",
-    "bytes": 1579108,
+    "bytes": 5456440,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 7,
     "loopSeamPass": true
   },
   {
     "exercise": "tibialis_raise",
-    "bytes": 1587884,
+    "bytes": 5460832,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 6,
     "loopSeamPass": true
   },
   {
     "exercise": "copenhagen",
-    "bytes": 1595656,
+    "bytes": 5469564,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 11,
     "loopSeamPass": true
   },
   {
     "exercise": "hamstring_slider",
-    "bytes": 1607868,
+    "bytes": 5476236,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 12,
     "loopSeamPass": true

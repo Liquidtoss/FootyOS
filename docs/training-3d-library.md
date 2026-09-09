@@ -50,3 +50,36 @@ References checked while authoring on September 8, 2026:
 ## Verification results
 
 The debug build and unit tests passed. The existing Training flow and floor-press control tests passed. The full-library emulator test then passed on the API 36 FootyOS_Preview emulator, loading all twelve assets, observing visible motion for moving exercises, and changing camera presets. The initial narrow screenshot sample was replaced with a full viewport comparison over multiple animation phases to accommodate first-use rendering and pauses within the loop. All twelve GLBs passed motion, loop endpoint, checksum and embedded-resource checks. Total bundled GLB size is approximately 19 MiB.
+
+### Refined runtime surfaces and camera framing
+
+The runtime now retains one baked Catmull–Clark subdivision level (about
+161,000–163,500 triangles per complete scene, previously 43,000–46,000).
+`skin_detail.bin` contains the level-one Multires sculpt offsets from the same
+Blender Studio CC0 realistic male asset linked in the manifest. This restores
+source detail rather than replacing the athlete with an unrelated rig. Detail is
+restricted to exposed skin to prevent the body protruding through clothing;
+established finger and sole geometry is largely retained. Smooth wrist weights
+replace the abrupt automatic-weight/rigid-hand boundary. Subdivision is applied
+**before** the armature so existing motion and skinning stay live. Animation
+sampler bytes were compared with the prior assets and match for all 12 exercises.
+
+To refresh surfaces without reauthoring animation:
+
+```
+Blender -b --python assets/training3d/source/refresh_runtime_meshes.py
+```
+
+The authoring scripts call the same refinement function on export. Editable
+`.blend` files retain the coarse cage. Regenerate sculpt offsets, if needed, with
+`extract_skin_detail.py -- /path/to/human_base_meshes_bundle.blend` in Blender.
+The source and CC0 details are in `licenses/blender-human-base-meshes.txt`.
+Each runtime GLB remains below the 8 MiB budget (~5.2 MiB); the bundled library
+increases from about 19 MiB to 63 MiB.
+
+Camera presets now use the assets' original metre scale and target the athlete
+at 1 m above the mat (0.45 m for floor exercises). Default, side, front, and reset
+share this target; the carry has extra distance for its walking path. This avoids
+framing the mat's origin or scaling from equipment-heavy bind-pose bounds.
+The emulator library test captures each preset in its external `viewer-review`
+folder for visual review in addition to checking actual rendered motion.

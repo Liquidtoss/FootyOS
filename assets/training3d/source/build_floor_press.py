@@ -306,13 +306,13 @@ hero_location=camera.location.copy();hero_rotation=camera.rotation_euler.copy()
 camera.location=(3,-.15,.95);camera.rotation_euler=(Vector((0,-.15,.28))-camera.location).to_track_quat('-Z','Y').to_euler()
 scene.frame_set(1);scene.render.filepath=str(OUT/'previews/floor_press_side_start.png');bpy.ops.render.render(write_still=True)
 camera.location=hero_location;camera.rotation_euler=hero_rotation
-# Exclude studio lighting/camera/floor; keep athlete, equipment, mat.
+# Refine the rest surface before selecting runtime objects.
+sys.path.insert(0,str(OUT/'source'))
+from mesh_quality import prepare_runtime_meshes
+prepare_runtime_meshes()
 bpy.ops.object.select_all(action='DESELECT')
 for o in scene.objects:
     if o.type in {'MESH','ARMATURE','CURVE','EMPTY'} and o.name!='Studio ground':o.select_set(True)
-for obj in scene.objects:
-    for modifier in obj.modifiers:
-        if modifier.type=='SUBSURF': modifier.show_viewport=False;modifier.show_render=False
 runtime=ROOT/'app/src/main/assets/training3d';runtime.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(runtime/'floor_press.glb'),export_format='GLB',use_selection=True,export_animations=True,export_animation_mode='SCENE',export_frame_range=True,export_force_sampling=True,export_apply=True)
 sys.path.insert(0,str(ROOT/'tools'))

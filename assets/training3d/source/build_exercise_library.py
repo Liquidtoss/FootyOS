@@ -262,9 +262,9 @@ def build(exercise):
     for frame,label in [(1,'start'),(int((end-1)/2)+1,'finish')]:
         scene.frame_set(frame);scene.render.filepath=str(OUT/'previews'/f'{exercise}_{label}.png');bpy.ops.render.render(write_still=True)
     scene.frame_set(1)
-    for obj in scene.objects:
-        for mod in obj.modifiers:
-            if mod.type=='SUBSURF':mod.show_viewport=False;mod.show_render=False
+    sys.path.insert(0,str(OUT/'source'))
+    from mesh_quality import prepare_runtime_meshes
+    prepare_runtime_meshes()
     bpy.ops.object.select_all(action='DESELECT')
     for obj in scene.objects:
         if obj.type in {'MESH','ARMATURE','CURVE','EMPTY'}:obj.select_set(True)
