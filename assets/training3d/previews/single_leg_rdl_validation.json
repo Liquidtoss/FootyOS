@@ -1,0 +1,8 @@
+{
+  "exercise": "single_leg_rdl",
+  "frames": 121,
+  "durationSeconds": 4,
+  "maxFlatFootContactErrorMeters": 1.1920928827402477e-10,
+  "maxGripAttachmentErrorMeters": 5.960464477539063e-08,
+  "variant": "Left-side demonstration"
+}

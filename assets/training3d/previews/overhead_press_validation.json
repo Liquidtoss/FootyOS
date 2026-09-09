@@ -1,0 +1,8 @@
+{
+  "exercise": "overhead_press",
+  "frames": 121,
+  "durationSeconds": 4,
+  "maxFlatFootContactErrorMeters": 1.1920928827402477e-10,
+  "maxGripAttachmentErrorMeters": 0.0,
+  "variant": "Left-side demonstration"
+}

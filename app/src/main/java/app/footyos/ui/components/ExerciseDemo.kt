@@ -54,8 +54,7 @@ fun ExerciseReferenceDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                if (exercise.id == "floor_press") FloorPressViewer()
-                else ExerciseMovementGuide(exercise.movement)
+                Exercise3DViewer(exercise)
                 Text(exercise.prescription, color = MaterialTheme.colorScheme.primary)
                 Text("Form cues", style = MaterialTheme.typography.titleSmall)
                 exercise.cues.forEach { Text("• $it") }
@@ -68,8 +67,7 @@ fun ExerciseReferenceDialog(
                     Text("Watch reference • ${exercise.reference.source}")
                 }
                 Text(
-                    if (exercise.id == "floor_press") "Rotate the 3D demonstration to inspect form. Use the reference video for full setup and technique."
-                    else "The diagrams highlight the main positions. Use the reference video for full setup, tempo, and technique.",
+                    "Rotate the 3D demonstration to inspect form. Use the reference video for full setup and technique.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -79,27 +77,8 @@ fun ExerciseReferenceDialog(
 }
 
 @Composable
-fun ExerciseLoop(movement: Movement, playing: Boolean) {
-    if (movement == Movement.Press) {
-        FloorPressViewer(playing = playing)
-        return
-    }
-    var finish by remember(movement) { mutableStateOf(false) }
-    LaunchedEffect(movement, playing) {
-        if (playing) while (true) { delay(1800); finish = !finish }
-        else finish = false
-    }
-    val guide = guideFor(movement)
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        PositionFrame(
-            label = if (finish) "FINISH POSITION" else "START POSITION",
-            detail = if (finish) guide.finish else guide.start,
-            movement = movement, finish = finish, modifier = Modifier.fillMaxWidth(),
-        )
-        Text(guide.motion, style = MaterialTheme.typography.bodySmall)
-        Text("Position guide • tap ▶ for full technique video", style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
+fun ExerciseLoop(exercise: Exercise, playing: Boolean) {
+    Exercise3DViewer(exercise, playing)
 }
 
 @Composable

@@ -1,0 +1,8 @@
+{
+  "exercise": "swing",
+  "frames": 61,
+  "durationSeconds": 2,
+  "maxFlatFootContactErrorMeters": 1.1920928827402477e-10,
+  "maxGripAttachmentErrorMeters": 0,
+  "variant": "Bilateral demonstration"
+}

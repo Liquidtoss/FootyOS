@@ -18,141 +18,146 @@
     },
     {
       "id": "row",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/row.glb",
       "requiredClips": [
-        "left",
-        "right"
+        "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "c486d3ed41b0ae58944074a1fc397969cce85e4e0ea17fb0abe4352ee46ca1ad",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "One-side demonstration; repeat on other side"
     },
     {
       "id": "overhead_press",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/overhead_press.glb",
       "requiredClips": [
-        "left",
-        "right"
+        "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "ab982b6b0f7a240c5bb7095fb9f53c9acf817c71cfb3b7c9866c42a2168f90c7",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "One-side demonstration; repeat on other side"
     },
     {
       "id": "suitcase_carry",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/suitcase_carry.glb",
       "requiredClips": [
-        "left",
-        "right"
+        "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "ac3593c168c843eab69a6d7e689f1c4dd036cc14dd05749aeceaa1f6e666f468",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "One-side demonstration; repeat on other side"
     },
     {
       "id": "swing",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/swing.glb",
       "requiredClips": [
         "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "92a169b66d37c8ef1789464d40eb47beabaa02579db607ed5cdfc7ea98e4403b",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "Bilateral demonstration"
     },
     {
       "id": "goblet_squat",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/goblet_squat.glb",
       "requiredClips": [
         "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "2c8cd5ccc792538504bb15fc63b0ddbc07b2e77591d02f4acfcceff70fafc263",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "Bilateral demonstration"
     },
     {
       "id": "split_squat",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/split_squat.glb",
       "requiredClips": [
-        "left",
-        "right"
+        "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "c16a5cc18dfe36b6e94ae5cdd0c3110f2538b128710f76461909440c03fe30ee",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "One-side demonstration; repeat on other side"
     },
     {
       "id": "single_leg_rdl",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/single_leg_rdl.glb",
       "requiredClips": [
-        "left",
-        "right"
+        "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "bbdadbf138fe5ec28518974b46a8181c62e23209bfe76fddff3ac74cff1c9d64",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "One-side demonstration; repeat on other side"
     },
     {
       "id": "calf_raise",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/calf_raise.glb",
       "requiredClips": [
         "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "f83b8d9e915772bdce1bdec155b412f15f4a96dfda0ed682c3b12067d4aa6662",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "Bilateral demonstration"
     },
     {
       "id": "tibialis_raise",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/tibialis_raise.glb",
       "requiredClips": [
         "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "d309d0798cc52b6a85f16a9e61207e4f4da815523ff4d49d030a1445fa01bccb",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "Bilateral demonstration"
     },
     {
       "id": "copenhagen",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/copenhagen.glb",
       "requiredClips": [
-        "left",
-        "right"
+        "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "37ff6cfc7aa4c7ab40785a7362f5ec37809c664de872e673b1ac4df31ddac964",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "Knee-supported isometric hold"
     },
     {
       "id": "hamstring_slider",
-      "status": "pending",
+      "status": "prototype",
       "runtimePath": "app/src/main/assets/training3d/hamstring_slider.glb",
       "requiredClips": [
         "rep"
       ],
-      "sourceUrl": null,
-      "licensePath": null,
-      "sha256": null,
-      "reviewEvidence": null
+      "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
+      "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
+      "sha256": "6ad26ac579fcd48c2c5d014f251ade1e3dd8aa7957dc2decce1145250b3da84e",
+      "reviewEvidence": "docs/training-3d-library.md",
+      "variation": "Bilateral demonstration"
     }
   ]
 }

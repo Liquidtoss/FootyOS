@@ -2,11 +2,9 @@
 
 ## Current checkpoint
 
-Milestone 2 is complete as a visual prototype: one clothed, skinned athlete and a four-second single-arm kettlebell floor-press animation (bell outside the working forearm) were authored in Blender 4.5.9 LTS. Editable scenes, a 1.58 MiB GLB, preview renders, and source/license records are saved. See `assets/training3d/previews/floor_press_review.md` for review evidence, measurements and limitations. The other eleven exercises remain pending.
+All twelve exercise assets now have native interactive playback, including eleven new loops authored on the shared Blender rig. See [the library notes](training-3d-library.md) for demonstrated variations, regeneration instructions and validation. One-sided demos are explicitly labeled; mirrored side clips and physical-device profiling remain future refinements. The assets are prototypes, with source scenes and review renders retained.
 
-Native interactive playback is now implemented for this one exercise using pinned SceneView 2.3.0: the reference dialog loops automatically; the guided card follows workout playback. Drag orbits, pinch zooms, and controls offer front/side/reset, pause, and half speed. It loads the bundled GLB offline, retains form cues/reference on model-load failure, and offers retry. Lifecycle pause prevents animation advancing in the background. The demo remains explicitly left-arm only.
-
-Validation: debug build and unit tests passed; five emulator tests covering viewer controls and Training flow passed on the API 36 FootyOS_Preview emulator. Visually confirmed rendered character and orbit from the opposite side. A final gesture fix prevents the parent scroll container intercepting drags. Hardware-device frame-time profiling and mirrored right-side clips remain follow-ups; no performance certification or coaching approval is claimed.
+The user expanded the earlier incremental scope to the remaining workouts. The milestone table below is historical planning context; it no longer restricts this completed library implementation to a single exercise per turn.
 
 ## Platform decision
 
@@ -47,9 +45,9 @@ Mixamo can help with humanoid rigging, but Adobe ID access is required. Its gene
 - A load failure retains the existing reference guidance and a retry action; never leave an empty area. Do not fetch models on every exercise change.
 - Technical validation is not a form-quality review. Review anatomy, range, contact, and loop continuity visually in Blender and on a phone. Record actual reviewer/evidence; never label an unreviewed asset approved.
 
-## Next-task prompt
+## Follow-up work
 
-“Continue milestone 3 in docs/training-3d-roadmap.md only: integrate the existing floor_press.glb into the native Android Training Guided player and reference dialog. Preserve current Training changes. Add orbit/front/side camera controls, slow playback and pause synchronization, verify loading fallback, and measure frame performance. Use the saved Blender source if adjustments are necessary. Do not animate the remaining exercises yet.”
+Use the per-exercise source builder to address specific form feedback without rebuilding the library. Optional extensions are mirrored side clips and profiling on physical Android hardware. The full native library is implemented; do not repeat the old milestone-3 integration task.
 
 ## Research sources (checked September 7, 2026)
 

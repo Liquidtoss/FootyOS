@@ -1,6 +1,8 @@
 package app.footyos.ui.components
 
 import androidx.compose.foundation.layout.*
+import app.footyos.domain.Exercise
+import app.footyos.domain.drillPlan
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +23,12 @@ import io.github.sceneview.rememberModelLoader
 
 /** Offline, single-arm demonstration. Playback never advances the workout timer or counts reps. */
 @Composable
-fun FloorPressViewer(playing: Boolean = true) {
+fun Exercise3DViewer(exercise: Exercise, playing: Boolean = true) = key(exercise.id) {
+    Exercise3DScene(exercise, playing)
+}
+
+@Composable
+private fun Exercise3DScene(exercise: Exercise, playing: Boolean) {
     var paused by remember { mutableStateOf(false) }
     var slow by remember { mutableStateOf(false) }
     var cameraPreset by remember { mutableIntStateOf(0) }
@@ -36,8 +43,10 @@ fun FloorPressViewer(playing: Boolean = true) {
             val loader = rememberModelLoader(engine)
             val result = remember(loader) {
                 runCatching {
-                    ModelNode(loader.createModelInstance("training3d/floor_press.glb"),
-                        autoAnimate = false, scaleToUnits = 2f, centerOrigin = Position(0f))
+                    ModelNode(loader.createModelInstance("training3d/${exercise.id}.glb"),
+                        autoAnimate = false,
+                        scaleToUnits = if (exercise.id in setOf("floor_press", "hamstring_slider", "copenhagen")) 2f else 3f,
+                        centerOrigin = Position(0f))
                 }
             }
             val model = result.getOrNull()
@@ -49,10 +58,12 @@ fun FloorPressViewer(playing: Boolean = true) {
                 // Keep animation time outside the camera key: changing views never restarts a rep.
                 val clock = remember(model) { PlaybackClock() }
                 key(cameraRevision) {
+                    val floorExercise = exercise.id in setOf("floor_press", "hamstring_slider", "copenhagen")
+                    val height = if (floorExercise) 1.2f else .5f
                     val home = when (cameraPreset) {
-                        1 -> Position(3.2f, 1.2f, 0f)
-                        2 -> Position(0f, 1.2f, 3.2f)
-                        else -> Position(2.5f, 2f, 2.5f)
+                        1 -> Position(3.2f, height, 0f)
+                        2 -> Position(0f, height, 3.2f)
+                        else -> Position(2.5f, if (floorExercise) 2f else 1.3f, 2.5f)
                     }
                     val camera = rememberCameraNode(engine) {
                         position = home
@@ -111,7 +122,13 @@ fun FloorPressViewer(playing: Boolean = true) {
             }
         }
         Text("Drag to rotate • pinch to zoom", style = MaterialTheme.typography.labelSmall)
-        Text("Left-arm demonstration • repeat on the other side", style = MaterialTheme.typography.bodySmall)
+        val description = when (exercise.id) {
+            "copenhagen" -> "Knee-supported hold • keep the hips lifted; repeat on the other side"
+            "suitcase_carry" -> "One-sided carry • the walking path loops for demonstration"
+            else -> if (exercise.drillPlan().sides == 2) "One-side demonstration • repeat on the other side"
+                else "Continuous form demonstration • move at your own pace"
+        }
+        Text(description, style = MaterialTheme.typography.bodySmall)
     }
 }
 

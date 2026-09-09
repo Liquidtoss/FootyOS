@@ -1,0 +1,8 @@
+{
+  "exercise": "suitcase_carry",
+  "frames": 241,
+  "durationSeconds": 8,
+  "maxFlatFootContactErrorMeters": 0,
+  "maxGripAttachmentErrorMeters": 5.960464477539063e-08,
+  "variant": "Left-side demonstration"
+}
