@@ -12,9 +12,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "86775ffc0a463ef896df649cac3bf834fba141828c6366720079ae63bf9be572",
+      "sha256": "4791aae0223eab63a112553ae1ba7435602b27194132dc31310137c37cd6ad32",
       "reviewEvidence": "assets/training3d/previews/floor_press_review.md",
-      "variation": "Single-arm, left-side demonstration; bell outside working forearm"
+      "variation": "Single-arm, left-side demonstration; bell outside working forearm",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "row",
@@ -25,9 +32,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "0b79f2f8067317d3eebacfdbbad4f793c9ff96b9505762a41d3794f3fb104f68",
+      "sha256": "1732e34de4e030e61e1cf82f576529514b1324c63b42da612e88442d73c449ca",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "One-side demonstration; repeat on other side"
+      "variation": "One-side demonstration; repeat on other side",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "overhead_press",
@@ -38,9 +52,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "213956a30866df6b9d8fd62b04b616a86ede07fd3f6d22f2b44c74e67b1ced4a",
+      "sha256": "1337b4b54eed01fdec892f35af3d571d67122e004431196bb78d1cd0afcd9a52",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "One-side demonstration; repeat on other side"
+      "variation": "One-side demonstration; repeat on other side",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "suitcase_carry",
@@ -51,9 +72,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "f4744b5634c83c4386feed4f6e6ef93ac5dd4989aca156009292ee2ba499a64c",
+      "sha256": "2ca3f3103b9375322e269e64151cd9b977a9b19427dce03a6f22960d72ae1d3b",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "One-side demonstration; repeat on other side"
+      "variation": "One-side demonstration; repeat on other side",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "swing",
@@ -64,9 +92,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "75095cc2acd2741c5e38ed18e0e05187bd9bbb0bbbe2c8ff039f148b43d0a306",
+      "sha256": "3de1b0345918e0d8493f05f8a04c43187f9e86c42bc142ef9de1e2e225ee3d1a",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "Bilateral demonstration"
+      "variation": "Bilateral demonstration",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "goblet_squat",
@@ -77,9 +112,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "c557aa70ce2de379099375f32174c569af72a15f993f45fab18999e79b2b9fd2",
+      "sha256": "94d4ac1973672b4bc20a3d6f11884bbdd24ae37591e869b3b561b046ddbb28a8",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "Bilateral demonstration"
+      "variation": "Bilateral demonstration",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "split_squat",
@@ -90,9 +132,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "4ca4bb515551415a80be8fc2faca150c203e9f9f94f59abf4677215da16bf824",
+      "sha256": "f83937e2e9b7f15ed5ff215c20f73127102b96697bbfb551810be77e4dd21da3",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "One-side demonstration; repeat on other side"
+      "variation": "One-side demonstration; repeat on other side",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "single_leg_rdl",
@@ -103,9 +152,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "77c1422b4fd67cf6ad9bd7f9dafe888c0899148baf6f292bae3929cbf8cefb12",
+      "sha256": "62e4b835ecd147b2780421bbe402898806648e3d53e73bd2c9170c9e2b7b0c57",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "One-side demonstration; repeat on other side"
+      "variation": "One-side demonstration; repeat on other side",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "calf_raise",
@@ -116,9 +172,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "d47028ea8b25d6a6becc7a65d11cfb58a3e0a53a39f6859a79ed24b069d1af59",
+      "sha256": "19333c0ffcb4da93ae93af44c0f4975f73ebf63caf54aec7721507e2e4a34b84",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "Bilateral demonstration"
+      "variation": "Bilateral demonstration",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "tibialis_raise",
@@ -129,9 +192,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "60e10f4649fa9acbf1aad85ca12043c773e746921a2226be2288bcb8841c43b9",
+      "sha256": "ccb3505ccce85dacc825434c565606e0df0e816c95544d86ac75b5e567c00cfe",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "Bilateral demonstration"
+      "variation": "Bilateral demonstration",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "copenhagen",
@@ -142,9 +212,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "96bd156c38864725e1a96c5c0082bd9fc67ebba44a81adec9fb74544b5ba95ee",
+      "sha256": "597596f5369420c878eecd83b925eff4beb0a3405a527e05fa3c8a4be4be83a1",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "Knee-supported isometric hold"
+      "variation": "Knee-supported isometric hold",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     },
     {
       "id": "hamstring_slider",
@@ -155,9 +232,16 @@
       ],
       "sourceUrl": "https://mirror.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.0.0.zip",
       "licensePath": "assets/training3d/licenses/blender-human-base-meshes.txt",
-      "sha256": "803c1472e2a1d016eac438d59bd745aa8f349ee0420a63f023570ab056420d76",
+      "sha256": "91ad03477affaa254ca36a34dbeda9125ec4601a75bb76590abbea27b50b93b2",
       "reviewEvidence": "docs/training-3d-library.md",
-      "variation": "Bilateral demonstration"
+      "variation": "Bilateral demonstration",
+      "additionalSources": [
+        {
+          "sourceUrl": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+          "licensePath": "assets/training3d/licenses/makehuman-forearm.txt",
+          "region": "Forearms and wrist transition"
+        }
+      ]
     }
   ]
 }

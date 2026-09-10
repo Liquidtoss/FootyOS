@@ -50,7 +50,7 @@ def correct_forearm_twist():
 
 def prepare_runtime_meshes():
     body=bpy.data.objects['Athlete • continuous skinned mesh']
-    if body.get('runtime_surface_version') == 2:
+    if body.get('runtime_surface_version') == 3:
         return
     correct_forearm_twist()
     # Keep the shaft on the forearm bone. Blend only across the anatomical wrist,
@@ -89,4 +89,6 @@ def prepare_runtime_meshes():
             if abs(v.co.x)>.32 and v.co.z<1.01:
                 strength=.25
             v.co+=Vector(offset)*strength
-    body['runtime_surface_version']=2
+    from forearm_surface import replace_forearms
+    replace_forearms(body)
+    body['runtime_surface_version']=3

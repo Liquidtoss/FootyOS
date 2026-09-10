@@ -1,84 +1,84 @@
 [
   {
     "exercise": "floor_press",
-    "bytes": 5519016,
-    "durationSeconds": 4.0333333015441895,
-    "movingChannels": 3,
-    "loopSeamPass": true
-  },
-  {
-    "exercise": "row",
-    "bytes": 5501120,
+    "bytes": 5522448,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 4,
     "loopSeamPass": true
   },
   {
-    "exercise": "overhead_press",
-    "bytes": 5498688,
+    "exercise": "row",
+    "bytes": 5507856,
     "durationSeconds": 4.0333333015441895,
-    "movingChannels": 3,
+    "movingChannels": 7,
+    "loopSeamPass": true
+  },
+  {
+    "exercise": "overhead_press",
+    "bytes": 5502076,
+    "durationSeconds": 4.0333333015441895,
+    "movingChannels": 4,
     "loopSeamPass": true
   },
   {
     "exercise": "suitcase_carry",
-    "bytes": 5554064,
+    "bytes": 5575176,
     "durationSeconds": 8.033333778381348,
-    "movingChannels": 16,
+    "movingChannels": 22,
     "loopSeamPass": true
   },
   {
     "exercise": "swing",
-    "bytes": 5507900,
+    "bytes": 5514600,
     "durationSeconds": 2.0333333015441895,
-    "movingChannels": 16,
+    "movingChannels": 22,
     "loopSeamPass": true
   },
   {
     "exercise": "goblet_squat",
-    "bytes": 5520756,
+    "bytes": 5532264,
     "durationSeconds": 4.0333333015441895,
-    "movingChannels": 15,
+    "movingChannels": 21,
     "loopSeamPass": true
   },
   {
     "exercise": "split_squat",
-    "bytes": 5462832,
+    "bytes": 5467644,
     "durationSeconds": 4.0333333015441895,
-    "movingChannels": 7,
+    "movingChannels": 9,
     "loopSeamPass": true
   },
   {
     "exercise": "single_leg_rdl",
-    "bytes": 5514016,
+    "bytes": 5518840,
     "durationSeconds": 4.0333333015441895,
-    "movingChannels": 11,
+    "movingChannels": 13,
     "loopSeamPass": true
   },
   {
     "exercise": "calf_raise",
-    "bytes": 5456440,
+    "bytes": 5461252,
     "durationSeconds": 4.0333333015441895,
-    "movingChannels": 7,
+    "movingChannels": 9,
     "loopSeamPass": true
   },
   {
     "exercise": "tibialis_raise",
-    "bytes": 5460832,
+    "bytes": 5462776,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 6,
     "loopSeamPass": true
   },
   {
     "exercise": "copenhagen",
-    "bytes": 5469564,
+    "bytes": 5474864,
     "durationSeconds": 4.0333333015441895,
-    "movingChannels": 11,
+    "movingChannels": 13,
     "loopSeamPass": true
   },
   {
     "exercise": "hamstring_slider",
-    "bytes": 5476236,
+    "bytes": 5478184,
     "durationSeconds": 4.0333333015441895,
     "movingChannels": 12,
     "loopSeamPass": true

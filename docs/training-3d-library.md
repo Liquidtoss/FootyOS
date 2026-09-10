@@ -102,3 +102,26 @@ real motion. Maximum endpoint deviation during the correction was 0.062 mm
 The complete palm pose matrix is checked on every authored frame. Quaternion
 signs are made continuous before baking to avoid interpolation jumps. A close-up
 of the corrected surface is saved at `assets/training3d/previews/wrist_alignment.png`.
+
+### MakeHuman forearm surface replacement
+
+The raised wrist silhouette persisted because the old bone endpoint was offset
+from the visible wrist ring. Version 3 replaces the exposed forearm surface
+using MakeHuman's CC0 hm08 anatomy, fitted to the athlete's proportions. The
+475-vertex reference is subdivided twice before projection onto the dense skin.
+Only the forearm and wrist transition are reprojected; fingers, face, torso,
+clothes, equipment, camera and exercise paths are retained.
+
+Two surface-deformation bones terminate at the actual visible wrist centre,
+computed from the skin ring. Their animated endpoint follows that point through
+the existing hand transform, with an assertion limiting attachment drift to
+0.1 mm on every frame. Their proximal end follows the original elbow. This
+removes the mismatch between the forearm surface and the hand's old rig pivot.
+A short skin blend connects the new surface to the existing elbow and palm.
+
+`forearm_surface.py` performs the fit, using the pinned local
+`makehuman_forearm.json`; no runtime download is needed. Source URL, asset
+license and download checksums are in `licenses/makehuman-forearm.txt`.
+`extract_makehuman_forearm.py` reproduces the reference from the upstream OBJ
+and skeleton JSON. The exact side-on swing pose is recorded in
+`forearm_surface_before.png` and `forearm_surface_after.png` for comparison.

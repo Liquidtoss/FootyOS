@@ -23,6 +23,10 @@ for entry in manifest['exercises']:
     bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,export_animations=True,export_animation_mode='SCENE',export_frame_range=True,export_force_sampling=True,export_apply=True)
     merge_animations(path)
     entry['sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
+    entry['additionalSources']=[{
+        'sourceUrl':'https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj',
+        'licensePath':'assets/training3d/licenses/makehuman-forearm.txt',
+        'region':'Forearms and wrist transition'}]
     assert path.stat().st_size<=manifest['maxBytesPerAsset'], (exercise,path.stat().st_size)
     if exercise in {'overhead_press','floor_press','goblet_squat'}:
         scene.render.filepath=str(ROOT/'assets/training3d/previews'/f'{exercise}_refined.png')

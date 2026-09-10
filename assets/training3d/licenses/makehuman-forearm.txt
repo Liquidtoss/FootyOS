@@ -1,0 +1,17 @@
+Asset: MakeHuman hm08 base mesh, left forearm region (mirrored for right arm)
+Source: https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj
+Joint references: https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/rigs/default.mhskel
+Retrieved: 2026-09-09
+License: CC0, explicitly declared in the source OBJ header (September 2020 release).
+Source copyright holders: Data Collection AB, Joel Palmius, Jonas Hauquier.
+License reference: https://static.makehumancommunity.org/makehuman/faq/are_makehuman_files_free.html
+
+The checked-in makehuman_forearm.json is a normalized, cropped 475-vertex,
+440-face anatomical surface from the body group. No MakeHuman application code
+is included. FootyOS subdivides this reference and projects only its athlete's
+forearm surface onto it. Fingers, clothing, face and torso retain their existing
+Blender Studio asset provenance.
+
+SHA-256 original OBJ: 8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c
+SHA-256 original skeleton JSON: 99f179bce0aa850b45d4191a1d0d234c5851f881c057439470ded3bddf729a24
+SHA-256 extracted forearm JSON: 602f550fbab351fc3bc90f966cf9a1b87c65173977f734d09a3fc389b152e6d1
